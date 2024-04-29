@@ -5,28 +5,28 @@ signal pressed()
 var tileset_title:String = "Tileset"
 var tileset_path:String
 
-onready var button = $Button
-onready var lineEdit = $LineEdit
+@onready var button = $Button
+@onready var lineEdit = $LineEdit
 
 var button_pressed_last:int = 0
 
 func _ready():
 	button.text = tileset_title
 	lineEdit.text = tileset_title
-	button.connect("button_up", self, "_button_pressed")
-	lineEdit.connect("text_entered", self, "_on_text_entered")
-	lineEdit.connect("mouse_exited", self, "_on_lineedit_mouse_exited")
+	button.connect("button_up", Callable(self, "_button_pressed"))
+	lineEdit.connect("text_submitted", Callable(self, "_on_text_entered"))
+	lineEdit.connect("mouse_exited", Callable(self, "_on_lineedit_mouse_exited"))
 
 
 func selected(selected:bool):
-	button.pressed = selected
+	button.button_pressed = selected
 
 
 func _on_lineedit_mouse_exited():
 	stop_edit()
 
 func _button_pressed():
-	var time = OS.get_ticks_msec()
+	var time = Time.get_ticks_msec()
 	var elapsed = time - button_pressed_last
 	if elapsed <= 400:
 		start_edit()

@@ -27,20 +27,20 @@ func _ready():
 	pass
 
 func _disconnect_all():
-	if is_connected("request_completed", self, "info_received"):
-		disconnect("request_completed", self, "info_received")
+	if is_connected("request_completed", Callable(self, "info_received")):
+		disconnect("request_completed", Callable(self, "info_received"))
 	
-	if is_connected("request_completed", self, "games_received"):
-		disconnect("request_completed", self, "games_received")
+	if is_connected("request_completed", Callable(self, "games_received")):
+		disconnect("request_completed", Callable(self, "games_received"))
 	
-	if is_connected("request_completed", self, "_login_status"):
-		disconnect("request_completed", self, "_login_status")
+	if is_connected("request_completed", Callable(self, "_login_status")):
+		disconnect("request_completed", Callable(self, "_login_status"))
 	
-	if is_connected("request_completed", self, "_upload_status"):
-		disconnect("request_completed", self, "_upload_status")
+	if is_connected("request_completed", Callable(self, "_upload_status")):
+		disconnect("request_completed", Callable(self, "_upload_status"))
 	
-	if is_connected("request_completed", self, "_game_downloaded"):
-		disconnect("request_completed", self, "_game_downloaded")
+	if is_connected("request_completed", Callable(self, "_game_downloaded")):
+		disconnect("request_completed", Callable(self, "_game_downloaded"))
 
 
 
@@ -49,7 +49,7 @@ func _prepare_query_string(data:Dictionary) -> String:
 	
 	var i = 0
 	for key in data.keys():
-		string += key + "=" + str(data[key]).http_escape()
+		string += key + "=" + str(data[key]).uri_encode()
 		if i < data.size() - 1:
 			string += "&"
 		i+= 1
@@ -59,7 +59,7 @@ func _prepare_query_string(data:Dictionary) -> String:
 
 func login(username: String, password: String):
 	_disconnect_all()
-	connect("request_completed", self, "_login_status")
+	connect("request_completed", Callable(self, "_login_status"))
 	credentials = {
 		"username": username,
 		"password": password
@@ -78,7 +78,9 @@ func _login_status(result, response_code, headers, body):
 		ES.error("Failed to connect, HTTPRequest error: " + str(result))
 		return
 
-	var data = JSON.parse(body.get_string_from_utf8())
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(body.get_string_from_utf8())
+	var data = test_json_conv.get_data()
 	if response_code == 200:
 		logged_in = true
 		emit_signal("login_success", response_code, data.result)
@@ -89,7 +91,7 @@ func _login_status(result, response_code, headers, body):
 
 func upload(packed_project, game_data: String):
 	_disconnect_all()
-	connect("request_completed", self, "_upload_status")
+	connect("request_completed", Callable(self, "_upload_status"))
 	var game = {
 		"username": credentials.username,
 		"password": credentials.password,
@@ -116,14 +118,16 @@ func _upload_status(result, response_code, headers, body):
 
 func get_info():
 	_disconnect_all()
-	connect("request_completed", self, "info_received")
-	request(ADDRESS + "/games/info", PoolStringArray(), VERIFY_SSL)
+	connect("request_completed", Callable(self, "info_received"))
+	request(ADDRESS + "/games/info", PackedStringArray(), VERIFY_SSL)
 
 
 func info_received(result, response_code, headers, body):
 	if response_code == 200:
 		var text = body.get_string_from_utf8()
-		var data = JSON.parse(text)
+		var test_json_conv = JSON.new()
+		test_json_conv.parse(text)
+		var data = test_json_conv.get_data()
 		
 		if data.error == OK:
 			emit_signal("info_received", data.result)
@@ -135,8 +139,8 @@ func info_received(result, response_code, headers, body):
 func get_games(page:int):
 	_disconnect_all()
 	print("Getting games page " + str(page))
-	connect("request_completed", self, "games_received")
-	request(ADDRESS + "/games/" + str(page), PoolStringArray(), VERIFY_SSL)
+	connect("request_completed", Callable(self, "games_received"))
+	request(ADDRESS + "/games/" + str(page), PackedStringArray(), VERIFY_SSL)
 
 
 func games_received(result, response_code, headers, body):
@@ -146,7 +150,9 @@ func games_received(result, response_code, headers, body):
 	
 	if response_code == 200:
 		var text = body.get_string_from_utf8()
-		var data = JSON.parse(text)
+		var test_json_conv = JSON.new()
+		test_json_conv.parse(text)
+		var data = test_json_conv.get_data()
 		emit_signal("games_received", data.result)
 		return
 	
@@ -158,8 +164,8 @@ func download(file_name:String):
 	
 	print("download " + file_name + "...")
 	_disconnect_all()
-	connect("request_completed", self, "_game_downloaded")
-	var err = request(ADDRESS + "/download/" + file_name, PoolStringArray(), VERIFY_SSL)
+	connect("request_completed", Callable(self, "_game_downloaded"))
+	var err = request(ADDRESS + "/download/" + file_name, PackedStringArray(), VERIFY_SSL)
 	if err != OK:
 		ES.error("HTTPRequest Error: " + str(err))
 
@@ -169,7 +175,9 @@ func _game_downloaded(result, response_code, headers, body):
 	print("response_code = " + str(response_code))
 	if response_code == 200:
 		var text = body.get_string_from_utf8()
-		var data = JSON.parse(text)
+		var test_json_conv = JSON.new()
+		test_json_conv.parse(text)
+		var data = test_json_conv.get_data()
 		
 		if data.error:
 			ES.error("Download failed. Invalid JSON response.")

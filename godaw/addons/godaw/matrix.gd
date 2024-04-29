@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 class_name Matrix
 
 # 2d array of matrix contents

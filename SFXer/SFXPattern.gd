@@ -3,11 +3,11 @@ class_name SFXPattern extends Resource
 signal length_changed(length)
 signal speed_changed(speed)
 
-export(int, 4, 32, 1) var length = 8 setget set_length, get_length
-export(Array, Resource) var notes := []
+@export var length = 8: get = get_length, set = set_length # (int, 4, 32, 1)
+@export var notes := [] # (Array, Resource)
 
 # 1 = 1 note per second
-export(int, 1, 32) var speed = 1 setget set_speed, get_speed
+@export var speed = 1: get = get_velocity, set = set_velocity # (int, 1, 32)
 
 
 func _init():
@@ -31,11 +31,11 @@ func set_length(l:int):
 func get_length() -> int:
 	return length
 
-func set_speed(s:int):
+func set_velocity(s:int):
 	speed = s
 	emit_signal("speed_changed", s)
 
-func get_speed() -> int:
+func get_velocity() -> int:
 	return speed
 
 func get_length_seconds() -> float:

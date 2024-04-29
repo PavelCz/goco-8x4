@@ -33,7 +33,7 @@ func clipboard_get() -> ClipboardItem:
 	return clipboard
 
 func project_folder_exists(project:String):
-	var dir = Directory.new()
+	var dir = DirAccess.new()
 	return dir.dir_exists("user://projects/" + project)
 
 func open_project(project:String):
@@ -122,7 +122,7 @@ func _deferred_goto_scene(path):
 	var s = ResourceLoader.load(path)
 
 	# Instance the new scene.
-	current_scene = s.instance()
+	current_scene = s.instantiate()
 
 	# Add it to the active scene, as child of root.
 	get_tree().root.add_child(current_scene)

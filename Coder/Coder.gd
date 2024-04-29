@@ -2,8 +2,8 @@ class_name Coder extends VBoxContainer
 
 const Editor = preload("res://Coder/Editor.tscn")
 
-export(bool) var testing:bool = false
-export(String) var testing_project_name := "rpg"
+@export var testing: bool = false
+@export var testing_project_name := "rpg"
 
 var has_focus:bool = false
 
@@ -22,9 +22,9 @@ func _draw():
 """
 
 func _ready():
-	$Code/Sidebar/Tree.connect("request_open", self, "_on_request_open")
-	$Code/Sidebar/Tree.connect("item_renamed", self, "_on_tree_item_renamed")
-	$Code/Sidebar/Tree.connect("item_autoload_changed", self, "_on_item_autoload_changed")
+	$Code/Sidebar/Tree.connect("request_open", Callable(self, "_on_request_open"))
+	$Code/Sidebar/Tree.connect("item_renamed", Callable(self, "_on_tree_item_renamed"))
+	$Code/Sidebar/Tree.connect("item_autoload_changed", Callable(self, "_on_item_autoload_changed"))
 	
 	if testing:
 		var p = Project.new(testing_project_name)
@@ -54,7 +54,7 @@ func _open_project(project:Project):
 		var editor:TextEdit = $Code/EditorTabs.get_current_tab_control()
 		# silently fail this
 		if editor:
-			editor.cursor_set_line(line)
+			editor.set_caret_line(line)
 	
 	$Code/Sidebar/FileMenu/AddScriptButton.disabled = false
 
@@ -80,7 +80,7 @@ func _before_save_project(project:Project):
 		project.put_meta("editor_coder_current_tab_id", tabID)
 		
 		# save current line as well
-		var line = tab.cursor_get_line()
+		var line = tab.get_caret_line()
 		project.put_meta("editor_coder_current_line", line)
 
 func _save_project(project:Project):
@@ -112,7 +112,7 @@ func _input(event:InputEvent):
 			$Code/Sidebar.show()
 			$Code/Sidebar.grab_focus()
 			$Code/Sidebar.grab_click_focus()
-		get_tree().set_input_as_handled()
+		get_viewport().set_input_as_handled()
 
 
 func is_file_open(path:String):
@@ -152,7 +152,7 @@ func open_file(path:String):
 	f.close()
 	
 	var tab_title = Array(path.split("/")).pop_back().trim_suffix('.gd')
-	var tab = Editor.instance()
+	var tab = Editor.instantiate()
 	tab.file = path
 	tab.text = text
 	
@@ -179,14 +179,14 @@ func _on_tree_item_renamed(item, file_name:String, new_file_name:String):
 
 func _on_AddScriptButton_pressed():
 	var item:Node = $Code/Sidebar/Tree.add_file("")
-	item.connect("file_renamed", self, "_on_new_file_named", [item])
+	item.connect("file_renamed", Callable(self, "_on_new_file_named").bind(item))
 	item.start_edit()
 
 
 func _on_new_file_named(old_path, new_path, item):
 	if old_path == "" and new_path == "":
-		disconnect("file_renamed", self, "_on_new_file_named")
-		print("cancelled new file creation")
+		disconnect("file_renamed", Callable(self, "_on_new_file_named"))
+		print("canceled new file creation")
 		return
 	
 	old_path = $Code/Sidebar/Tree.directory.get_current_dir() + "/" + old_path
@@ -203,7 +203,7 @@ func _on_new_file_named(old_path, new_path, item):
 		f.store_line(code_template)
 		f.close()
 	
-	item.disconnect("file_renamed", self, "_on_new_file_named")
+	item.disconnect("file_renamed", Callable(self, "_on_new_file_named"))
 	item.get_node("Autoload").show()
 	if not err:
 		open_file(new_path)

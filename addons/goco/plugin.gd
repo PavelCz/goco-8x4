@@ -1,10 +1,10 @@
-tool
+@tool
 extends EditorPlugin
 
 var gocoTools
 
 func _enter_tree():
-	gocoTools = preload("res://addons/goco/GocoTools.tscn").instance()
+	gocoTools = preload("res://addons/goco/GocoTools.tscn").instantiate()
 	add_control_to_bottom_panel(gocoTools, "Goco Tools")
 
 

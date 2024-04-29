@@ -1,4 +1,4 @@
-class_name ConsoleCommand extends Reference
+class_name ConsoleCommand extends RefCounted
 
 const COMMAND_OK = 0
 const COMMAND_ERROR = 1

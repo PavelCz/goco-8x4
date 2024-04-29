@@ -1,7 +1,7 @@
-tool
+@tool
 extends Node
 
-export (String) var audio_bus = "Master"
+@export (String) var audio_bus = "Master"
 
 
 func start() -> void:
@@ -18,7 +18,7 @@ func get_class_name():
 
 
 func _update_audio_buses():
-	_send("set_audio_bus", audio_bus)
+	_send("set_audio_bus_name", audio_bus)
 
 
 func _send(msg: String, args = null) -> void:

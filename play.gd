@@ -164,7 +164,7 @@ func draw_paddle():
 func draw_ball():
 	var x = ball_pos.x
 	var y = ball_pos.y
-	frect(x-2, y-2, 4, 4, Color.white)
+	frect(x-2, y-2, 4, 4, Color.WHITE)
 
 
 func get_tile_rect(x, y):
@@ -184,5 +184,5 @@ func draw_hud():
 	x -= w/2
 	y -= h/2
 	#outline
-	draw_text(s, x+1, y+1, Color.gray)
-	draw_text(s, x, y, Color.white)
+	draw_text(s, x+1, y+1, Color.GRAY)
+	draw_text(s, x, y, Color.WHITE)

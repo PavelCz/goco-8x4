@@ -1,6 +1,6 @@
 # this class takes a parse tree from the parser
 # and generates gdscript code for the Epikus runtime
-class_name Compiler extends Reference
+class_name Compiler extends RefCounted
 
 var ESNode = load("res://escript/ESNode.gd")
 

@@ -1,4 +1,4 @@
-class_name ClipboardItem extends Reference
+class_name ClipboardItem extends RefCounted
 
 enum TYPE {
 	IMAGE,

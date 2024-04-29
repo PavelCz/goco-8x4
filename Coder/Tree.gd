@@ -8,7 +8,7 @@ const CoderTreeItemScene = preload("res://Coder/CoderTreeItem.tscn")
 
 var is_visible:bool = false
 
-var directory:Directory = Directory.new()
+var directory:DirAccess = DirAccess.new()
 
 var focused_item = null
 
@@ -50,7 +50,7 @@ func set_folder(path:String):
 	if err != OK:
 		ES.echo("Failed to open " + path + ". Error: " + str(err))
 		return
-	directory.list_dir_begin(true, true)
+	directory.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	var file = directory.get_next()
 	while file != "":
 		if directory.current_is_dir():
@@ -80,7 +80,7 @@ func clear():
 
 
 func create_item(type, path) -> CoderTreeItem:
-	var item = CoderTreeItemScene.instance()
+	var item = CoderTreeItemScene.instantiate()
 	item.type = type
 	item.path = path
 	
@@ -91,9 +91,9 @@ func create_item(type, path) -> CoderTreeItem:
 		if al.has(relPath):
 			item.autoload = true
 	
-	item.connect("selected", self, "_on_select_item", [item])
-	item.connect("file_renamed", self, "_on_rename_item", [item])
-	item.connect("autoload_changed", self, "_on_item_autoload_changed", [item])
+	item.connect("selected", Callable(self, "_on_select_item").bind(item))
+	item.connect("file_renamed", Callable(self, "_on_rename_item").bind(item))
+	item.connect("autoload_changed", Callable(self, "_on_item_autoload_changed").bind(item))
 	
 	add_child(item)
 	return item

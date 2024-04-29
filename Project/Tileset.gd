@@ -1,4 +1,4 @@
-class_name Tileset extends Reference
+class_name Tileset extends RefCounted
 
 signal changed()
 
@@ -20,9 +20,9 @@ func create(path:String, title:String, width: int, height: int, tile_size:int = 
 	self.tile_size = tile_size
 	image = Image.new()
 	image.create(width, height, false, Image.FORMAT_RGBA8)
-	image.lock()
+	false # image.lock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	texture = ImageTexture.new()
-	texture.create_from_image(image, 0)
+	texture.create_from_image(image) #,0
 	saved = false
 
 
@@ -40,9 +40,9 @@ func update_texture():
 
 
 func save_file():
-	image.unlock()
+	false # image.unlock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	var err = image.save_png(path)
-	image.lock()
+	false # image.lock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 
 	if err:
 		ES.echo("Failed to save image to path " + path + ". Err:" + str(err))
@@ -74,7 +74,7 @@ func unpack(project, packed: Dictionary):
 	image = Image.new()
 	image.create_from_data(packed.image_width, packed.image_height, false, Image.FORMAT_RGBA8, packed.image_data)
 	texture = ImageTexture.new()
-	texture.create_from_image(image, 0)
+	texture.create_from_image(image) #,0
 
 
 func serialize(project) -> Dictionary:
@@ -104,13 +104,13 @@ func load_file():
 		ES.echo("Failed to open image at " + path + ". Err:" + str(err))
 		return false
 
-	var buffer = f.get_buffer(f.get_len())
+	var buffer = f.get_buffer(f.get_length())
 	f.close()
 
 	image = Image.new()
 	image.load_png_from_buffer(buffer)
 
 	texture = ImageTexture.new()
-	texture.create_from_image(image, 0)
+	texture.create_from_image(image) #,0
 
 

@@ -1,10 +1,10 @@
 extends Control
 
-onready var label = $HBoxContainer/Label
-onready var anim = $AnimationPlayer
+@onready var label = $HBoxContainer/Label
+@onready var anim = $AnimationPlayer
 
 func _ready():
-	$Timer.connect("timeout", self, "_on_timeout")
+	$Timer.connect("timeout", Callable(self, "_on_timeout"))
 
 
 func notify(text, time:float = 2):

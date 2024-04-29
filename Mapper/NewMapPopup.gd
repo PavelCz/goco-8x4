@@ -1,4 +1,4 @@
-extends WindowDialog
+extends Window
 
 signal request_add(name, tilesize, width, height)
 
@@ -9,21 +9,21 @@ const TILE_SIZES = {
 	"32x32 px": 32
 }
 
-onready var mapName = $MarginContainer/VBoxContainer/MapName/mapNameValue
-onready var tileSize = $MarginContainer/VBoxContainer/TileSize/tilesizeValue
-onready var mapWidth = $MarginContainer/VBoxContainer/MapSize/HBoxContainer/mapWidthValue
-onready var mapHeight = $MarginContainer/VBoxContainer/MapSize/HBoxContainer/mapHeightValue
+@onready var mapName = $MarginContainer/VBoxContainer/MapName/mapNameValue
+@onready var tileSize = $MarginContainer/VBoxContainer/TileSize/tilesizeValue
+@onready var mapWidth = $MarginContainer/VBoxContainer/MapSize/HBoxContainer/mapWidthValue
+@onready var mapHeight = $MarginContainer/VBoxContainer/MapSize/HBoxContainer/mapHeightValue
 
-onready var addButton = $MarginContainer/VBoxContainer/Buttons/AddButton
-onready var cancelButton = $MarginContainer/VBoxContainer/Buttons/CancelButton
+@onready var addButton = $MarginContainer/VBoxContainer/Buttons/AddButton
+@onready var cancelButton = $MarginContainer/VBoxContainer/Buttons/CancelButton
 
 var tile_size:int = 8
 
 func _ready():
-	addButton.connect("pressed", self, "_on_add_pressed")
-	cancelButton.connect("pressed", self, "_cancel")
-	mapName.connect("text_changed", self, "_on_name_changed")
-	tileSize.connect("item_selected", self, "_on_tilesize_selected")
+	addButton.connect("pressed", Callable(self, "_on_add_pressed"))
+	cancelButton.connect("pressed", Callable(self, "_cancel"))
+	mapName.connect("text_changed", Callable(self, "_on_name_changed"))
+	tileSize.connect("item_selected", Callable(self, "_on_tilesize_selected"))
 	
 	# add available tile sizes
 	var i = 0

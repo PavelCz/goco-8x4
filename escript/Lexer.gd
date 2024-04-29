@@ -1,4 +1,4 @@
-class_name Lexer extends Reference
+class_name Lexer extends RefCounted
 
 enum TOKEN {
 	IDENTIFIER,

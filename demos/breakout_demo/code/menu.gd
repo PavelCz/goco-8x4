@@ -12,7 +12,7 @@ var t = 0.0
 func _start():
 	play_timer.one_shot = true
 	play_timer.wait_time = 1
-	play_timer.connect("timeout", self, "play")
+	play_timer.connect("timeout", Callable(self, "play"))
 	add_child(play_timer)
 
 func play():
@@ -34,11 +34,11 @@ func _draw():
 	x -= text_w / 2
 	y -= text_h / 2
 	
-	var col = Color.white
+	var col = Color.WHITE
 	
 	if will_play:
 		col = Color(sin(t * 7), cos(t * 9), sin(t*5 - cos(t*5)))
-		var cam = get_camera()
+		var cam = get_camera_3d()
 		var zoom = cam.zoom.x
 		var z = lerp(zoom, 2, play_timer.time_left/2)
 		cam.zoom.x = z

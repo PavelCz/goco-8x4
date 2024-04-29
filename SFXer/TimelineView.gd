@@ -1,9 +1,9 @@
 tool class_name TimelineView extends Control
 
-export(Color) var playhead_color = Color.white
-var pattern:SFXPattern setget set_pattern, get_pattern
+@export var playhead_color: Color = Color.WHITE
+var pattern:SFXPattern: get = get_pattern, set = set_pattern
 
-onready var player:SynthPlayer = $SynthPlayer
+@onready var player:SynthPlayer = $SynthPlayer
 
 var selected_wave:int = Note.WAVES.SINE
 
@@ -58,24 +58,24 @@ func get_pattern_note_index_at_x(x: float):
 func _gui_input(event):
 	if event is InputEventMouseMotion and is_painting:
 		paint(event)
-		get_tree().set_input_as_handled()
+		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseButton:
 		if not event.pressed and is_painting:
 			is_painting = false
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 		else:
 			is_painting = true
 			paint(event)
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 	elif event is InputEventKey:
 		var e = event as InputEventKey
-		if e.scancode == KEY_SPACE:
+		if e.keycode == KEY_SPACE:
 			if not e.pressed:
 				if is_playing:
 					stop()
 				else:
 					play()
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 
 
 func paint(event:InputEventMouse):
@@ -129,7 +129,7 @@ func _draw():
 		if n.key > -1:
 			# draw the note
 			var note_height = get_note_height(n)
-			draw_rect(Rect2(x, rect.size.y - note_height, note_width-1, note_thickness), Color.teal)
+			draw_rect(Rect2(x, rect.size.y - note_height, note_width-1, note_thickness), Color.TEAL)
 		
 		x += note_width
 	

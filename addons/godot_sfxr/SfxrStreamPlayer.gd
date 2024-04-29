@@ -1,4 +1,4 @@
-tool
+@tool
 extends AudioStreamPlayer
 
 
@@ -116,4 +116,4 @@ func build_sfx(play_after_build: bool = false):
 func play(from_position: float = 0.0):
     if playing:
         stop()
-    .play(from_position)
+    super.play(from_position)

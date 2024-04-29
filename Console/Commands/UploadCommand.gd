@@ -1,10 +1,10 @@
 class_name UploadCommand extends ConsoleCommand
 
 func _disconnect_all():
-	if ES.console.gocoNet.is_connected("upload_success", self, "_on_upload_success"):
-		ES.console.gocoNet.disconnect("upload_success", self, "_on_upload_success")
-	if ES.console.gocoNet.is_connected("upload_failed", self, "_on_upload_failed"):
-		ES.console.gocoNet.disconnect("upload_failed", self, "_on_upload_failed")
+	if ES.console.gocoNet.is_connected("upload_success", Callable(self, "_on_upload_success")):
+		ES.console.gocoNet.disconnect("upload_success", Callable(self, "_on_upload_success"))
+	if ES.console.gocoNet.is_connected("upload_failed", Callable(self, "_on_upload_failed")):
+		ES.console.gocoNet.disconnect("upload_failed", Callable(self, "_on_upload_failed"))
 	
 
 func run(args:Array = []):
@@ -17,10 +17,10 @@ func run(args:Array = []):
 		return COMMAND_ERROR
 	
 	var path = (ES.console.dir + "/" + args[0]).replace('///', '//')
-	if not ES.console.gocoNet.is_connected("upload_success", self, "_on_upload_success"):
-		ES.console.gocoNet.connect("upload_success", self, "_on_upload_success")
-	if not ES.console.gocoNet.is_connected("upload_failed", self, "_on_upload_failed"):
-		ES.console.gocoNet.connect("upload_failed", self, "_on_upload_failed")
+	if not ES.console.gocoNet.is_connected("upload_success", Callable(self, "_on_upload_success")):
+		ES.console.gocoNet.connect("upload_success", Callable(self, "_on_upload_success"))
+	if not ES.console.gocoNet.is_connected("upload_failed", Callable(self, "_on_upload_failed")):
+		ES.console.gocoNet.connect("upload_failed", Callable(self, "_on_upload_failed"))
 	
 	
 	var f = File.new()
@@ -37,7 +37,7 @@ func run(args:Array = []):
 	var packed_project = ES.packer.unpack(path)
 	
 	# get game data and convert to base64
-	var game = f.get_buffer(f.get_len())
+	var game = f.get_buffer(f.get_length())
 	var game_base64 = Marshalls.raw_to_base64(game)
 	
 	f.close()

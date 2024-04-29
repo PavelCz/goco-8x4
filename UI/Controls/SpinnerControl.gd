@@ -2,17 +2,17 @@ tool class_name SpinnerControl extends Control
 
 signal value_changed(value)
 
-export(int) var min_value = 0
-export(int) var max_value = 255
-export(int) var value = 0 setget set_value, get_value
-export(String) var prefix = ""
-export(String) var suffix = ""
+@export var min_value: int = 0
+@export var max_value: int = 255
+@export var value: int = 0: get = get_value, set = set_value
+@export var prefix: String = ""
+@export var suffix: String = ""
 
-export(bool) var ensure_digit_length = false
+@export var ensure_digit_length: bool = false
 
-export(Color) var value_bg = Color(0.1, 0.1, 0.1)
-export(Color) var font_color = Color(0.1, 0.1, 0.1)
-export(Color) var font_color_hover = Color(0.1, 0.1, 0.1)
+@export var value_bg: Color = Color(0.1, 0.1, 0.1)
+@export var font_color: Color = Color(0.1, 0.1, 0.1)
+@export var font_color_hover: Color = Color(0.1, 0.1, 0.1)
 
 var back_rect := Rect2()
 var value_rect := Rect2()
@@ -42,9 +42,9 @@ func _gui_input(event):
 		elif value_rect.has_point(event.position):
 			value_pressed = event.pressed
 			if not event.pressed:
-				if event.button_index == BUTTON_LEFT:
+				if event.button_index == MOUSE_BUTTON_LEFT:
 					forward()
-				elif event.button_index == BUTTON_RIGHT:
+				elif event.button_index == MOUSE_BUTTON_RIGHT:
 					back()
 		elif forward_rect.has_point(event.position):
 			forward_pressed = event.pressed
@@ -105,12 +105,12 @@ func _recalculate_sizes():
 	forward_rect.position.y = 0
 	forward_rect.size = font.get_string_size(">")
 	
-	rect_min_size.y = font_height + 2
-	rect_min_size.x = 0
-	rect_min_size.x += font.get_string_size("<").x + 2
-	rect_min_size.x += font.get_string_size(prefix).x
-	rect_min_size.x += font.get_string_size("000").x + 2
-	rect_min_size.x += font.get_string_size(">").x
+	custom_minimum_size.y = font_height + 2
+	custom_minimum_size.x = 0
+	custom_minimum_size.x += font.get_string_size("<").x + 2
+	custom_minimum_size.x += font.get_string_size(prefix).x
+	custom_minimum_size.x += font.get_string_size("000").x + 2
+	custom_minimum_size.x += font.get_string_size(">").x
 
 
 func _draw():

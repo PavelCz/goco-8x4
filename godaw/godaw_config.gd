@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 
 # required by GoDAW for WaveformPlayer nodes to function

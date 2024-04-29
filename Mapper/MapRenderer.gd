@@ -1,17 +1,17 @@
 tool class_name MapRenderer extends Control
 
-export(Color) var background_color = Color.black
-export(Color) var grid_color = Color.gray
-export(bool) var show_grid := false
+@export var background_color: Color = Color.BLACK
+@export var grid_color: Color = Color.GRAY
+@export var show_grid := false
 
-onready var status_mouse = $mouse
-onready var status_camera = $camera
+@onready var status_mouse = $mouse
+@onready var status_camera = $camera
 
 var map:Map
 var layer:MapLayer
 
-var selected_tileset:Tileset setget set_selected_tileset, get_selected_tileset
-var selected_tileset_tile:int = -1 setget set_selected_tileset_tile, get_selected_tileset_tile
+var selected_tileset:Tileset: get = get_selected_tileset, set = set_selected_tileset
+var selected_tileset_tile:int = -1: get = get_selected_tileset_tile, set = set_selected_tileset_tile
 
 var camera := Vector2(0, 0)
 var zoom := 1.0
@@ -27,7 +27,7 @@ var pan_start_mouse := Vector2()
 var pan_start_camera := Vector2()
 
 func _ready():
-	rect_clip_content = true
+	clip_contents = true
 
 func set_selected_tileset(ts:Tileset):
 	selected_tileset = ts
@@ -50,16 +50,16 @@ func _gui_input(event):
 		elif event is InputEventMouseMotion and is_panning:
 			update_pan()
 		elif event is InputEventMouseButton:
-			if event.pressed and event.button_index == BUTTON_WHEEL_UP:
+			if event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP:
 				set_zoom(zoom + 1)
-			elif event.pressed and event.button_index == BUTTON_WHEEL_DOWN:
+			elif event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 				set_zoom(zoom - 1)
-			elif event.button_index == BUTTON_LEFT:
+			elif event.button_index == MOUSE_BUTTON_LEFT:
 				if not event.pressed and is_painting:
 					is_painting = false
 				elif event.pressed and not is_painting:
 					start_paint()
-			elif event.button_index == BUTTON_MIDDLE:
+			elif event.button_index == MOUSE_BUTTON_MIDDLE:
 				if not event.pressed and is_panning:
 					is_panning = false
 				elif event.pressed and not is_panning:

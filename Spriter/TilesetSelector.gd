@@ -4,11 +4,11 @@ const TilesetButton = preload("res://Spriter/Tileset/TilesetButton.tscn")
 
 signal tileset_selected(tileset)
 
-onready var scrollLeftButton = $ScrollLeft
-onready var scrollRightButton = $ScrollRight
-onready var scrollContainer = $ScrollContainer
-onready var buttonsList = $ScrollContainer/ButtonList
-onready var addTilesetButton = $AddTilesetButton
+@onready var scrollLeftButton = $ScrollLeft
+@onready var scrollRightButton = $ScrollRight
+@onready var scrollContainer = $ScrollContainer
+@onready var buttonsList = $ScrollContainer/ButtonList
+@onready var addTilesetButton = $AddTilesetButton
 
 var is_scrolling_left:bool = false
 var is_scrolling_right:bool = false
@@ -16,10 +16,10 @@ var is_scrolling_right:bool = false
 var current_tileset:Tileset
 
 func _ready():
-	scrollLeftButton.connect("button_down", self, "_start_scroll_left")
-	scrollLeftButton.connect("button_up", self, "_stop_scroll_left")
-	scrollRightButton.connect("button_down", self, "_start_scroll_right")
-	scrollRightButton.connect("button_up", self, "_stop_scroll_right")
+	scrollLeftButton.connect("button_down", Callable(self, "_start_scroll_left"))
+	scrollLeftButton.connect("button_up", Callable(self, "_stop_scroll_left"))
+	scrollRightButton.connect("button_down", Callable(self, "_start_scroll_right"))
+	scrollRightButton.connect("button_up", Callable(self, "_stop_scroll_right"))
 
 
 func clear():
@@ -36,10 +36,10 @@ func has_button_for(tileset:Tileset):
 
 
 func add_tileset_button(tileset:Tileset):
-	var button = TilesetButton.instance()
+	var button = TilesetButton.instantiate()
 	button.tileset_title = tileset.title
 	buttonsList.add_child(button)
-	button.connect("pressed", self, "_select_tileset", [tileset])
+	button.connect("pressed", Callable(self, "_select_tileset").bind(tileset))
 
 
 func select_tileset(tileset:Tileset):

@@ -1,6 +1,6 @@
 class_name CodeEditor extends TextEdit
 
-onready var suggestionsMenu:PopupMenu = $SuggestionsMenu
+@onready var suggestionsMenu:PopupMenu = $SuggestionsMenu
 
 var file:String = ""
 var dirty:bool = true
@@ -53,8 +53,8 @@ func _ready():
 	for constant in CONSTANTS:
 		add_keyword_color(constant, COLORS.Constant)
 	
-	connect("text_changed", self, "_on_text_changed")
-	connect("cursor_changed", self, "_on_cursor_changed")
+	connect("text_changed", Callable(self, "_on_text_changed"))
+	connect("cursor_changed", Callable(self, "_on_cursor_changed"))
 
 
 func _on_cursor_changed():
@@ -71,8 +71,8 @@ func symbol_exists(symbol:String) -> bool:
 
 
 func get_currently_typing_word() -> Dictionary:
-	var line = cursor_get_line()
-	var col = cursor_get_column()
+	var line = get_caret_line()
+	var col = get_caret_column()
 	
 	if col == 0:
 		return {}
@@ -122,7 +122,7 @@ func get_currently_typing_word() -> Dictionary:
 
 
 func replace_currently_typing_word(replacement:String):
-	var line = cursor_get_line()
+	var line = get_caret_line()
 	var code = get_line(line)
 	var current = get_currently_typing_word()
 	
@@ -133,9 +133,9 @@ func replace_currently_typing_word(replacement:String):
 
 
 func begin_autocomplete():
-	var line = cursor_get_line()
-	var col = cursor_get_column()
-	var word = get_word_under_cursor()
+	var line = get_caret_line()
+	var col = get_caret_column()
+	var word = get_word_under_caret()
 	if word.length() == 0:
 		var current = get_currently_typing_word()
 		
@@ -188,7 +188,7 @@ func accept_suggestion():
 	replace_currently_typing_word(suggestion)
 	
 	var word = get_currently_typing_word()
-	cursor_set_column(word.start + word.word.length())
+	set_caret_column(word.start + word.word.length())
 	
 	suggestionsMenu.hide()
 
@@ -203,8 +203,8 @@ func get_string_size(string:String) -> Vector2:
 
 
 func show_suggestions():
-	var line = cursor_get_line()
-	var col = cursor_get_column()
+	var line = get_caret_line()
+	var col = get_caret_column()
 	var code = get_line(line).substr(0, col)
 	
 	print(code)
@@ -221,7 +221,7 @@ func show_suggestions():
 	
 	var pos = Vector2(x, font_height * (line + 1))
 	var menu:PopupMenu = suggestionsMenu
-	menu.rect_position = rect_pos + pos
+	menu.position = rect_pos + pos
 	suggestionsMenu.popup()
 
 

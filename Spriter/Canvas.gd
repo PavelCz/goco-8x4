@@ -6,9 +6,9 @@ signal zoom_changed(zoom)
 signal image_changed()
 signal pencil_color_picked(color)
 
-export(Texture) var test_image
+@export var test_image: Texture2D
 
-var selected_color:Color = Color.white
+var selected_color:Color = Color.WHITE
 var selected_tool:String = "pencil"
 
 var image:Image
@@ -45,9 +45,9 @@ func set_image(img:Image):
 	image = img
 	
 	image_texture = ImageTexture.new()
-	image_texture.create_from_image(image, 0)
+	image_texture.create_from_image(image) #,0
 	
-	image.lock()
+	false # image.lock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	
 	zoom = 1
 	var size = get_rect().size
@@ -158,7 +158,7 @@ func apply_tool(event:InputEventMouse):
 				set_pixel(pixel, selected_color)
 				update_image_texture()
 				update()
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 		elif event.is_action("left_click"):
 			if event.pressed:
 				pencil_is_drawing = true
@@ -168,17 +168,17 @@ func apply_tool(event:InputEventMouse):
 					update()
 			else:
 				pencil_is_drawing = false
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 		elif event.is_action("right_click"):
 			selected_color = image.get_pixelv(pixel)
 			emit_signal("pencil_color_picked", selected_color)
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 	elif selected_tool == "fill":
 		if event is InputEventMouseButton and event.pressed:
 			fill()
 			update_image_texture()
 			update()
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 
 func is_equal_approximate(a:Color, b:Color):
 	if round(a.r*100) != round(b.r*100):
@@ -205,7 +205,7 @@ func fill():
 	
 	var queue = []
 	queue.append(start)
-	while not queue.empty():
+	while not queue.is_empty():
 		var n = queue.pop_front()
 		if image.get_pixel(n.x, n.y).is_equal_approx(start_color):
 			image.set_pixel(n.x, n.y, selected_color)
@@ -260,7 +260,7 @@ func _draw():
 	var size = get_rect().size
 	var center = size / 2
 	
-	draw_rect(Rect2(0, 0, size.x, size.y), Color(0.1, 0.1, 0.1), true, 1.0, false)
+	draw_rect(Rect2(0, 0, size.x, size.y), Color(0.1, 0.1, 0.1), true, 1.0)# false) TODOConverter3To4 Antialiasing argument is missing
 	
 	# draw image
 	if image:
@@ -270,7 +270,7 @@ func _draw():
 		var pos = center - ((img_size / 2) * zoom)
 		pos = pos.floor()
 		
-		draw_rect(Rect2(pos, img_size * zoom), Color.black, true)
+		draw_rect(Rect2(pos, img_size * zoom), Color.BLACK, true)
 		
 		if image_region:
 			draw_texture_rect_region(image_texture, Rect2(pos, img_size * zoom), image_region)

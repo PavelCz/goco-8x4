@@ -1,10 +1,10 @@
 class_name SynthPlayer extends AudioStreamPlayer
 
-export(Resource) var pattern setget set_pattern, get_pattern
+@export var pattern: Resource: get = get_pattern, set = set_pattern
 
 var _playback:AudioStreamGeneratorPlayback
-export(float) var sample_rate:float = 11025
-export(float) var buffer_length:float = 0.1
+@export var sample_rate: float = 11025
+@export var buffer_length: float = 0.1
 
 # the current audio frame
 var playhead_frames:int = 0
@@ -42,8 +42,8 @@ func _ready():
 
 func set_pattern(p):
 	if pattern:
-		pattern.disconnect("length_changed", self, "_on_pattern_length_changed")
-		pattern.disconnect("speed_changed", self, "_on_pattern_speed_changed")
+		pattern.disconnect("length_changed", Callable(self, "_on_pattern_length_changed"))
+		pattern.disconnect("speed_changed", Callable(self, "_on_pattern_speed_changed"))
 	
 	pattern = p
 	_init_pattern()
@@ -54,8 +54,8 @@ func _init_pattern():
 	pattern_length = note_length * pattern.length
 	
 	if pattern:
-		pattern.connect("length_changed", self, "_on_pattern_length_changed")
-		pattern.connect("speed_changed", self, "_on_pattern_speed_changed")
+		pattern.connect("length_changed", Callable(self, "_on_pattern_length_changed"))
+		pattern.connect("speed_changed", Callable(self, "_on_pattern_speed_changed"))
 
 
 func get_pattern() -> SFXPattern:
@@ -79,7 +79,7 @@ func play(from:float = 0.0):
 	pattern_position_frames = 0
 	pattern_note_index = -1
 	_playback.clear_buffer()
-	.play(from)
+	super.play(from)
 
 # get the playhead position, in seconds.
 # this is the current frame position / hertz

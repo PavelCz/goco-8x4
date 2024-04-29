@@ -2,8 +2,8 @@ class_name MapEditor extends Control
 
 const LayerItem = preload("res://Mapper/LayerItem.tscn")
 
-onready var mapRenderer = $Map/MapRenderer
-onready var layersList = $MapOptions/LayersList
+@onready var mapRenderer = $Map/MapRenderer
+@onready var layersList = $MapOptions/LayersList
 
 var layersListButtonGroup = ButtonGroup.new()
 
@@ -19,10 +19,10 @@ func open_map(map):
 	mapRenderer.update()
 	
 	for layer in map.layers:
-		var layerItem = LayerItem.instance()
+		var layerItem = LayerItem.instantiate()
 		layerItem.group = layersListButtonGroup
 		layerItem.text = layer.name
-		layerItem.connect("toggled", self, "_on_layer_item_toggled", [layerItem])
+		layerItem.connect("toggled", Callable(self, "_on_layer_item_toggled").bind(layerItem))
 		layersList.add_child(layerItem)
 
 func clear():

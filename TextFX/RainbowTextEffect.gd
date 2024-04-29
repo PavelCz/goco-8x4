@@ -1,7 +1,7 @@
 tool class_name RainbowTextEffect extends RichTextEffect
 
-export(Color) var start_color = Color.aqua
-export(Color) var end_color = Color.palegreen
+@export var start_color: Color = Color.AQUA
+@export var end_color: Color = Color.PALE_GREEN
 
 var bbcode := "rainbow"
 

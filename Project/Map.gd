@@ -1,4 +1,4 @@
-class_name Map extends Reference
+class_name Map extends RefCounted
 
 var name:String = "new_map"
 var layers := []
@@ -53,8 +53,8 @@ func serialize(project) -> Dictionary:
 	var data = {
 		"name": name,
 		"layers": [],
-		"size": var2str(size),
-		"tile_size": var2str(tile_size)
+		"size": var_to_str(size),
+		"tile_size": var_to_str(tile_size)
 	}
 	
 	for layer in layers:
@@ -65,7 +65,7 @@ func serialize(project) -> Dictionary:
 
 func unserialize(project, data:Dictionary):
 	name = data.name
-	size = str2var(data.size)
+	size = str_to_var(data.size)
 	tile_size = int(data.tile_size)
 	
 	layers = []

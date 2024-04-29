@@ -6,7 +6,7 @@ func run(args:Array = []):
 		return ERR_PARAMETER_RANGE_ERROR
 	
 	var name = args[0]
-	var dir = Directory.new()
+	var dir = DirAccess.new()
 	dir.change_dir(ES.console.dir)
 	var err = dir.make_dir(name)
 	if err != OK:

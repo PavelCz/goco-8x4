@@ -1,4 +1,4 @@
-class_name EScript extends Reference
+class_name EScript extends RefCounted
 
 var lexer:Lexer
 var parser:Parser

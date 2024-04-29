@@ -1,27 +1,27 @@
-extends WindowDialog
+extends Window
 
 signal request_add(name, width, height, tilesize)
 
-onready var nameField = $MarginContainer/VBoxContainer/NameAndTileSize/name
-onready var tilesize = $MarginContainer/VBoxContainer/NameAndTileSize/Tilesize
-onready var rows = $MarginContainer/VBoxContainer/size/rows
-onready var columns = $MarginContainer/VBoxContainer/size/columns
-onready var info = $MarginContainer/VBoxContainer/Info
-onready var addButton = $MarginContainer/VBoxContainer/Buttons/Add
-onready var cancelButton = $MarginContainer/VBoxContainer/Buttons/Cancel
+@onready var nameField = $MarginContainer/VBoxContainer/NameAndTileSize/name
+@onready var tilesize = $MarginContainer/VBoxContainer/NameAndTileSize/Tilesize
+@onready var rows = $MarginContainer/VBoxContainer/size/rows
+@onready var columns = $MarginContainer/VBoxContainer/size/columns
+@onready var info = $MarginContainer/VBoxContainer/Info
+@onready var addButton = $MarginContainer/VBoxContainer/Buttons/Add
+@onready var cancelButton = $MarginContainer/VBoxContainer/Buttons/Cancel
 
 var valid_tilesizes = [4,8,16,32]
 
 var tilesize_value:int = 4
 
 func _ready():
-	cancelButton.connect("pressed", self, "cancel")
-	connect("about_to_show", self, "_about_to_show")
-	nameField.connect("text_changed", self, "_name_changed")
-	tilesize.connect("item_selected", self, "_on_tilesize_changed")
-	rows.connect("value_changed", self, "_on_rows_changed")
-	columns.connect("value_changed", self, "_on_columns_changed")
-	addButton.connect("pressed", self, "_request_add")
+	cancelButton.connect("pressed", Callable(self, "cancel"))
+	connect("about_to_popup", Callable(self, "_about_to_popup"))
+	nameField.connect("text_changed", Callable(self, "_name_changed"))
+	tilesize.connect("item_selected", Callable(self, "_on_tilesize_changed"))
+	rows.connect("value_changed", Callable(self, "_on_rows_changed"))
+	columns.connect("value_changed", Callable(self, "_on_columns_changed"))
+	addButton.connect("pressed", Callable(self, "_request_add"))
 	
 	for size in valid_tilesizes:
 		tilesize.add_item(str(size) + "x" + str(size) + " px")
@@ -41,7 +41,7 @@ func update_info():
 	var height = rows.value * tilesize_value
 	info.text = "(" + str(width) + "x" + str(height) + "px image size.)"
 
-func _about_to_show():
+func _about_to_popup():
 	nameField.text = ""
 	addButton.disabled = true
 

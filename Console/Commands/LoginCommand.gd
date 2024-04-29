@@ -8,11 +8,11 @@ func run(args:Array = []):
 	var username = args[0]
 	var password = args[1]
 	
-	if not ES.console.gocoNet.is_connected("login_success", self, "_on_login_success"):
-		ES.console.gocoNet.connect("login_success", self, "_on_login_success")
+	if not ES.console.gocoNet.is_connected("login_success", Callable(self, "_on_login_success")):
+		ES.console.gocoNet.connect("login_success", Callable(self, "_on_login_success"))
 		
-	if not ES.console.gocoNet.is_connected("login_failed", self, "_on_login_failed"):
-		ES.console.gocoNet.connect("login_failed", self, "_on_login_failed")
+	if not ES.console.gocoNet.is_connected("login_failed", Callable(self, "_on_login_failed")):
+		ES.console.gocoNet.connect("login_failed", Callable(self, "_on_login_failed"))
 	
 	ES.console.gocoNet.login(username, password)
 	
@@ -26,7 +26,9 @@ func _on_login_success(status_code, message):
 func _on_login_failed(result, response_code, headers, body):
 	ES.error("Login failed")
 	var text = body.get_string_from_utf8()
-	var json = JSON.parse(text)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(text)
+	var json = test_json_conv.get_data()
 	if json.error:
 		ES.error("Login failed. Json error: " + str(json.error))
 		ES.error("response text: " + text)

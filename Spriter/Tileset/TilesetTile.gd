@@ -4,11 +4,11 @@ signal button_down()
 signal button_up()
 signal changed()
 
-var tileset:Tileset setget set_tileset, get_tileset
-export(Rect2) var region:Rect2 setget set_region, get_region
-export(int) var render_size:int = 16 setget set_render_size, get_render_size
+var tileset:Tileset: get = get_tileset, set = set_tileset
+@export var region: Rect2: get = get_region, set = set_region_enabled
+@export var render_size: int = 16: get = get_render_size, set = set_render_size
 
-var pressed:bool = false setget set_pressed, get_pressed
+var pressed:bool = false: get = get_pressed, set = set_pressed
 
 func set_pressed(p:bool):
 	pressed = p
@@ -19,15 +19,15 @@ func get_pressed() -> bool:
 
 func set_tileset(t:Tileset):
 	if tileset:
-		tileset.disconnect("changed", self, "update")
+		tileset.disconnect("changed", Callable(self, "update"))
 	
 	tileset = t
-	tileset.connect("changed", self, "update")
+	tileset.connect("changed", Callable(self, "update"))
 
 func get_tileset() -> Tileset:
 	return tileset
 
-func set_region(r:Rect2):
+func set_region_enabled(r:Rect2):
 	region = r
 
 func get_region() -> Rect2:
@@ -35,29 +35,29 @@ func get_region() -> Rect2:
 
 func set_render_size(s: int):
 	render_size = s
-	rect_min_size.x = render_size + 4
-	rect_min_size.y = render_size + 4
+	custom_minimum_size.x = render_size + 4
+	custom_minimum_size.y = render_size + 4
 
 func get_render_size() -> int:
 	return render_size
 
 func _gui_input(event):
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			emit_signal("button_down")
-			get_tree().set_input_as_handled()
-		elif event.button_index == BUTTON_LEFT and not event.pressed:
+			get_viewport().set_input_as_handled()
+		elif event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			emit_signal("button_up")
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 	elif event.is_action("copy") and event.pressed:
 		_copy_region_to_clipboard()
-		get_tree().set_input_as_handled()
+		get_viewport().set_input_as_handled()
 	elif event.is_action("cut") and event.pressed:
 		_cut_region_to_clipboard()
-		get_tree().set_input_as_handled()
+		get_viewport().set_input_as_handled()
 	elif event.is_action("paste") and event.pressed:
 		_paste_from_clipboard()
-		get_tree().set_input_as_handled()
+		get_viewport().set_input_as_handled()
 
 func _copy_region_to_clipboard():
 	print("copying")
@@ -70,7 +70,7 @@ func _cut_region_to_clipboard():
 	var clipboard = ClipboardItem.new(ClipboardItem.TYPE.IMAGE, sub_image)
 	
 	# fill with transparent
-	tileset.image.fill_rect(region, Color.transparent)
+	tileset.image.fill_rect(region, Color.TRANSPARENT)
 	ES.clipboard_set(clipboard)
 
 func _paste_from_clipboard():
@@ -82,9 +82,9 @@ func _paste_from_clipboard():
 		
 
 func _draw():
-	var border_color = Color.black
+	var border_color = Color.BLACK
 	if pressed:
-		border_color = Color.white
+		border_color = Color.WHITE
 	
 	draw_rect(Rect2(0, 0, render_size + 2, render_size + 2), border_color, false, 2.0)
 	

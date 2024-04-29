@@ -1,25 +1,25 @@
 extends Control
 
-export(bool) var testing:bool = false
+@export var testing: bool = false
 
-onready var tilesetSelector = $VBoxContainer/Tilesets/Panel/TilesetSelector
-onready var tilesetControl:TilesetControl = $VBoxContainer/Tilesets/TilesetContainer/TilesetControl
-onready var canvas:Canvas = $VBoxContainer/Main/Painter/VBoxContainer/Canvas
-onready var palette:PaletteSelector = $VBoxContainer/Main/Tools/PaletteSelector
-onready var newTilesetPopup = $NewTilesetPopup
-onready var addTilesetButton = $VBoxContainer/Tilesets/Panel/TilesetSelector/AddTilesetButton
+@onready var tilesetSelector = $VBoxContainer/Tilesets/Panel/TilesetSelector
+@onready var tilesetControl:TilesetControl = $VBoxContainer/Tilesets/TilesetContainer/TilesetControl
+@onready var canvas:Canvas = $VBoxContainer/Main/Painter/VBoxContainer/Canvas
+@onready var palette:PaletteSelector = $VBoxContainer/Main/Tools/PaletteSelector
+@onready var newTilesetPopup = $NewTilesetPopup
+@onready var addTilesetButton = $VBoxContainer/Tilesets/Panel/TilesetSelector/AddTilesetButton
 
 var project:Project
 
 var clipboard = null
 
 func _ready():
-	addTilesetButton.connect("pressed", newTilesetPopup, "popup_centered")
-	newTilesetPopup.connect("request_add", self, "add_tileset")
-	tilesetControl.connect("tile_selected", self, "_on_tile_selected")
-	tilesetControl.connect("tile_changed", self, "_on_tile_changed")
-	canvas.connect("image_changed", self, "_on_canvas_image_changed")
-	tilesetSelector.connect("tileset_selected", self, "_show_tileset")
+	addTilesetButton.connect("pressed", Callable(newTilesetPopup, "popup_centered"))
+	newTilesetPopup.connect("request_add", Callable(self, "add_tileset"))
+	tilesetControl.connect("tile_selected", Callable(self, "_on_tile_selected"))
+	tilesetControl.connect("tile_changed", Callable(self, "_on_tile_changed"))
+	canvas.connect("image_changed", Callable(self, "_on_canvas_image_changed"))
+	tilesetSelector.connect("tileset_selected", Callable(self, "_show_tileset"))
 	
 	# testing
 	if testing:

@@ -1,4 +1,4 @@
-class_name MapLayer extends Reference
+class_name MapLayer extends RefCounted
 
 var name:String = "Unknown Layer"
 var tile_size:int = 8
@@ -50,8 +50,8 @@ func _init_tiles():
 func serialize(project) -> Dictionary:
 	var data = {
 		"name": name,
-		"tile_size": var2str(tile_size),
-		"size": var2str(size),
+		"tile_size": var_to_str(tile_size),
+		"size": var_to_str(size),
 		"tiles": []
 	}
 	
@@ -64,7 +64,7 @@ func serialize(project) -> Dictionary:
 func unserialize(project, data:Dictionary):
 	name = data.name
 	tile_size = int(data.tile_size)
-	size = str2var(data.size)
+	size = str_to_var(data.size)
 	
 	# initialize tiles
 	_init_tiles()

@@ -1,4 +1,4 @@
-class_name Parser extends Reference
+class_name Parser extends RefCounted
 
 var ESNode = load("res://escript/ESNode.gd")
 

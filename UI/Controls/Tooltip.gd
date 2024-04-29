@@ -7,7 +7,7 @@ var is_fading_out:bool = false
 func _ready():
 	fade_timer = Timer.new()
 	fade_timer.one_shot = true
-	fade_timer.connect("timeout", self, "_fade_out")
+	fade_timer.connect("timeout", Callable(self, "_fade_out"))
 	add_child(fade_timer)
 	hide()
 	
@@ -17,7 +17,7 @@ func _ready():
 		register_tooltip_from_groups(node)
 	
 	# listen for newly added nodes
-	get_tree().connect("node_added", self, "_on_tree_node_added")
+	get_tree().connect("node_added", Callable(self, "_on_tree_node_added"))
 
 
 func _on_tree_node_added(node:Node):
@@ -29,11 +29,11 @@ func register_tooltip_from_groups(node:Node):
 	for group in node.get_groups():
 		if group.begins_with("tooltip="):
 			var tooltip = group.trim_prefix("tooltip=")
-			node.connect("mouse_entered", self, "show_tooltip", [tooltip])
+			node.connect("mouse_entered", Callable(self, "show_tooltip").bind(tooltip))
 
 
 func make_tooltip(node:Node, tooltip:String):
-	node.connect("mouse_entered", self, "show_tooltip", [tooltip])
+	node.connect("mouse_entered", Callable(self, "show_tooltip").bind(tooltip))
 
 
 func show_tooltip(tooltip: String, time: float = 2.0):

@@ -1,4 +1,4 @@
-class_name Project extends Reference
+class_name Project extends RefCounted
 
 var Map = load("res://Project/Map.gd")
 
@@ -68,7 +68,9 @@ func load_data() -> bool:
 		# get data and parse it
 		var data
 		
-		var json := JSON.parse(f.get_as_text())
+		var test_json_conv = JSON.new()
+		test_json_conv.parse(f.get_as_text())
+		var json := test_json_conv.get_data()
 		if json.error:
 			ES.error("Failed to parse JSON file " + project_file + ". Err: " + str(err))
 			return false
@@ -114,7 +116,7 @@ func save_data(save_scripts:bool = false):
 	if save_scripts:
 		save_scripts()
 	
-	var json = JSON.print(serialize(), "\t")
+	var json = JSON.stringify(serialize(), "\t")
 	
 	f.store_string(json)
 	f.close()
@@ -142,10 +144,10 @@ func load_compiled_script(name:String):
 func get_scripts() -> Array:
 	var scripts = []
 	
-	var dir = Directory.new()
+	var dir = DirAccess.new()
 	var err = dir.open(get_code_dir())
 	if err == OK:
-		dir.list_dir_begin(true, true)
+		dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 		
 		var script_file:String = dir.get_next()
 		while script_file != "":

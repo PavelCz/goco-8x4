@@ -6,11 +6,11 @@ var has_focus := false
 
 var argument_regex = RegEx.new()
 
-onready var scroll = $ScrollContainer
-onready var output = $ScrollContainer/VBoxContainer/Output
-onready var input = $ScrollContainer/VBoxContainer/Input/LineEdit
-onready var inputPrefix = $ScrollContainer/VBoxContainer/Input/InputPrefix
-onready var gocoNet = $GocoNet
+@onready var scroll = $ScrollContainer
+@onready var output = $ScrollContainer/VBoxContainer/Output
+@onready var input = $ScrollContainer/VBoxContainer/Input/LineEdit
+@onready var inputPrefix = $ScrollContainer/VBoxContainer/Input/InputPrefix
+@onready var gocoNet = $GocoNet
 
 var commands := {}
 var welcome_message = """[center]
@@ -71,7 +71,7 @@ func grab_focus():
 	has_focus = true
 
 func release_focus():
-	.release_focus()
+	super.release_focus()
 	has_focus = false
 
 func write(text:String):
@@ -100,7 +100,7 @@ func _input(event):
 		handled = true
 	
 	if handled:
-		get_tree().set_input_as_handled()
+		get_viewport().set_input_as_handled()
 
 func _process(delta):
 	if shouldScroll:

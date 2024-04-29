@@ -3,8 +3,8 @@ class_name ESNode2D extends Node2D
 const _FONT_DEFAULT = preload("res://UI/fonts/5x7.tres")
 
 var _project:Project
-onready var _runner = $"/root/Runner"
-onready var _camera = $"/root/Runner/Camera"
+@onready var _runner = $"/root/Runner"
+@onready var _camera = $"/root/Runner/Camera3D"
 
 var _BUTTON_MAPPING = [
 	"a",
@@ -90,7 +90,7 @@ func btn_up(player_id:int = 0) -> _ButtonState:
 func btn_down(player_id:int = 0) -> _ButtonState:
 	return btn("down", player_id)
 
-func get_camera() -> Camera2D:
+func get_camera_3d() -> Camera2D:
 	return _camera
 
 # set camera zoom
@@ -128,7 +128,7 @@ func text_width(text: String) -> float:
 func text_height(text: String) -> float:
 	return _FONT_DEFAULT.get_string_size(text).y
 
-func draw_text(text: String, pos_x: int, pos_y: int, color:Color = Color.white):
+func draw_text(text: String, pos_x: int, pos_y: int, color:Color = Color.WHITE):
 	var h = _FONT_DEFAULT.get_height()
 	draw_string(_FONT_DEFAULT, Vector2(pos_x, pos_y + h), text, color)
 
@@ -174,8 +174,8 @@ func brect(x:int, y:int, w:int, h:int, color:Color, width:int = 1):
 func frect(x:int, y:int, w:int, h:int, color:Color):
 	draw_rect(Rect2(x, y, w, h), color, true)
 
-func line(x: int, y: int, to_x:int, to_y:int, width: int = 1, color:Color = Color.white):
+func line(x: int, y: int, to_x:int, to_y:int, width: int = 1, color:Color = Color.WHITE):
 	draw_line(Vector2(x, y), Vector2(to_x, to_y), color, width)
 
 func cls():
-	get_viewport().render_target_clear_mode = Viewport.CLEAR_MODE_ONLY_NEXT_FRAME
+	get_viewport().render_target_clear_mode = SubViewport.CLEAR_MODE_ONCE

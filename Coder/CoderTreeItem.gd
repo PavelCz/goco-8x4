@@ -7,8 +7,8 @@ signal file_renamed(old_path, new_path)
 signal edit_cancelled()
 signal autoload_changed(autoload)
 
-onready var button = $Button
-onready var lineEdit = $LineEdit
+@onready var button = $Button
+@onready var lineEdit = $LineEdit
 
 enum TYPE {
 	FILE,
@@ -17,7 +17,7 @@ enum TYPE {
 
 var type = TYPE.FILE
 var autoload := false
-var path:String = "" setget _set_path, _get_path
+var path:String = "": get = _get_path, set = _set_path
 
 var time_last_click:int = 0
 
@@ -31,14 +31,14 @@ func _ready():
 
 	if path.ends_with('.gd'):
 		$Autoload.show()
-		$Autoload.pressed = autoload
+		$Autoload.button_pressed = autoload
 	else:
 		$Autoload.hide()
 	
-	$Autoload.connect("toggled", self, "_on_Autoload_toggled")
-	button.connect("button_down", self, "_on_button_down")
-	lineEdit.connect("gui_input", self, "_on_line_edit_input")
-	lineEdit.connect("focus_exited", self, "_on_line_edit_focus_exited")
+	$Autoload.connect("toggled", Callable(self, "_on_Autoload_toggled"))
+	button.connect("button_down", Callable(self, "_on_button_down"))
+	lineEdit.connect("gui_input", Callable(self, "_on_line_edit_input"))
+	lineEdit.connect("focus_exited", Callable(self, "_on_line_edit_focus_exited"))
 
 func _on_line_edit_focus_exited():
 	if is_editing:
@@ -96,7 +96,7 @@ func _on_text_entered(text):
 	
 	var p = Array(path.trim_prefix("user://").split("/"))
 	p.pop_back()
-	p = ES.join(p, "/") + "/" + text
+	p = p, "/".join(ES) + "/" + text
 	path = p.trim_prefix("/")
 	
 	button.text = text
@@ -106,12 +106,12 @@ func _on_text_entered(text):
 	
 
 func _on_button_down():
-	var time = OS.get_ticks_msec()
+	var time = Time.get_ticks_msec()
 	if time - time_last_click <= 400:
 		start_edit()
 	else:
 		emit_signal("selected")
-	time_last_click = OS.get_ticks_msec()
+	time_last_click = Time.get_ticks_msec()
 
 
 func _on_Autoload_toggled(button_pressed):

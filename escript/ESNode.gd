@@ -1,4 +1,4 @@
-class_name ESNode extends Reference
+class_name ESNode extends RefCounted
 
 var production:int = 0
 var children:Array = []

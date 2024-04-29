@@ -10,7 +10,7 @@ var scripts := {}
 var paused:bool = false
 
 func _ready():
-	get_viewport().render_target_clear_mode = Viewport.CLEAR_MODE_NEVER
+	get_viewport().render_target_clear_mode = SubViewport.CLEAR_MODE_NEVER
 	
 	# load either a packed project, or a project
 	

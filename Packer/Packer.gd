@@ -1,9 +1,9 @@
-class_name Packer extends Reference
+class_name Packer extends RefCounted
 
 var games_dir_checked:bool = false
 
 func _check_games_dir():
-	var dir = Directory.new()
+	var dir = DirAccess.new()
 	var err = dir.open("user://")
 	if err:
 		ES.error("Cannot open user://. Err: " + str(err))

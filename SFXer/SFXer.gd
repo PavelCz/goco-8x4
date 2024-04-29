@@ -1,15 +1,15 @@
 class_name SFXer extends Control
 
-export(bool) var testing = false
-export(Resource) var test_pattern
+@export var testing: bool = false
+@export var test_pattern: Resource
 
 var project:Project
 
-onready var timelineView = $VBoxContainer/Control/MainPanel/TimelineView
-onready var SFXSlot = $VBoxContainer/TopBar/MenuBar/SFXSlotValue
-onready var speedControl = $VBoxContainer/Control/OptionsPanel/HBoxContainer/SpeedLength/Speed/SpeedValue
-onready var lengthControl = $VBoxContainer/Control/OptionsPanel/HBoxContainer/SpeedLength/Length/LengthValue
-onready var waveButtons = $VBoxContainer/Control/OptionsPanel/HBoxContainer/Waves/WaveButtons
+@onready var timelineView = $VBoxContainer/Control/MainPanel/TimelineView
+@onready var SFXSlot = $VBoxContainer/TopBar/MenuBar/SFXSlotValue
+@onready var speedControl = $VBoxContainer/Control/OptionsPanel/HBoxContainer/SpeedLength/Speed/SpeedValue
+@onready var lengthControl = $VBoxContainer/Control/OptionsPanel/HBoxContainer/SpeedLength/Length/LengthValue
+@onready var waveButtons = $VBoxContainer/Control/OptionsPanel/HBoxContainer/Waves/WaveButtons
 
 var waveButtonsGroup:ButtonGroup
 
@@ -19,11 +19,11 @@ var current_pattern:SFXPattern
 var selected_wave:int = Note.WAVES.SINE
 
 func _ready():
-	speedControl.connect("value_changed", self, "_set_pattern_speed")
-	lengthControl.connect("value_changed", self, "_set_pattern_length")
+	speedControl.connect("value_changed", Callable(self, "_set_pattern_speed"))
+	lengthControl.connect("value_changed", Callable(self, "_set_pattern_length"))
 	
 	var waveButtonsGroup = waveButtons.get_child(0).group
-	waveButtonsGroup.connect("pressed", self, "_on_wave_button_pressed")
+	waveButtonsGroup.connect("pressed", Callable(self, "_on_wave_button_pressed"))
 	
 	if testing:
 		open_pattern(test_pattern)
@@ -41,7 +41,7 @@ func _on_wave_button_pressed(button:Button):
 func _gui_input(event):
 	if event is InputEventKey:
 		var e = event as InputEventKey
-		if e.scancode == KEY_SPACE:
+		if e.keycode == KEY_SPACE:
 			if not e.pressed:
 				if timelineView.is_playing:
 					timelineView.stop()

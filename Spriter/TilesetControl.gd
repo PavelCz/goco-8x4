@@ -2,12 +2,12 @@ tool extends Control
 
 signal tile_selected(tile)
 
-export(Texture) var source
+@export var source: Texture2D
 var image:Image
 var image_texture:ImageTexture
 
-export(int) var tile_size = 8
-export(int) var tile_render_size:int = 24
+@export var tile_size: int = 8
+@export var tile_render_size: int = 24
 var rows:int = 1
 var columns:int = 1
 var render_scale:float = 1.0
@@ -40,16 +40,16 @@ func update_texture():
 func set_image(img:Image):
 	image = img
 	image_texture = ImageTexture.new()
-	image_texture.create_from_image(image, 0)
-	image.lock()
+	image_texture.create_from_image(image) #,0
+	false # image.lock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	
 	# calculate sizes
 	columns = image.get_size().x / tile_size
 	rows = image.get_size().y / tile_size
 	
 	# calculate control size
-	rect_min_size.x = columns * tile_render_size
-	rect_min_size.y = rows * tile_render_size
+	custom_minimum_size.x = columns * tile_render_size
+	custom_minimum_size.y = rows * tile_render_size
 	
 	render_scale = tile_render_size / tile_size
 	
@@ -66,7 +66,7 @@ func _gui_input(event:InputEvent):
 		set_mouse_position(event.position)
 		
 		if event is InputEventMouseButton and event.pressed:
-			if event.button_index == BUTTON_LEFT:
+			if event.button_index == MOUSE_BUTTON_LEFT:
 				var grid_pos = (mouse_pixel_pos / tile_size).floor()
 				var tile_index = get_tile_index(grid_pos)
 				select_tile(tile_index)
@@ -95,7 +95,7 @@ func _draw():
 	var size = rect.size
 	
 	# draw background
-	draw_rect(Rect2(0, 0, size.x, size.y), Color(0.1, 0.1, 0.1), true, 1.0, false)
+	draw_rect(Rect2(0, 0, size.x, size.y), Color(0.1, 0.1, 0.1), true, 1.0)# false) TODOConverter3To4 Antialiasing argument is missing
 	
 	# draw tiles
 	var padding_x = columns - 1

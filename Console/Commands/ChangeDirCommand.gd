@@ -9,7 +9,7 @@ func run(args:Array = []):
 	
 	var to_dir = args[0]
 	
-	var dir = Directory.new()
+	var dir = DirAccess.new()
 	dir.open(ES.console.dir)
 	dir.change_dir(to_dir)
 	var new_dir = dir.get_current_dir()

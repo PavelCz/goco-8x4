@@ -1,4 +1,4 @@
-class_name Token extends Reference
+class_name Token extends RefCounted
 
 var type:int
 var value

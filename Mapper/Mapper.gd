@@ -2,16 +2,16 @@ class_name Mapper extends Control
 
 var MapListItem = load("res://Mapper/MapListItem.tscn")
 
-export(bool) var testing = false
+@export var testing: bool = false
 
-onready var mapEditor = $VBoxContainer/VBoxContainer/MapEditor
-onready var tilesetControl = $VBoxContainer/VBoxContainer/MapEditor/Map/Tilesets/TilesetScroller/TilesetControl
-onready var tilesetSelector = $VBoxContainer/VBoxContainer/MapEditor/Map/Tilesets/TilesetSelector
+@onready var mapEditor = $VBoxContainer/VBoxContainer/MapEditor
+@onready var tilesetControl = $VBoxContainer/VBoxContainer/MapEditor/Map/Tilesets/TilesetScroller/TilesetControl
+@onready var tilesetSelector = $VBoxContainer/VBoxContainer/MapEditor/Map/Tilesets/TilesetSelector
 
-onready var mapListButtons = $VBoxContainer/VBoxContainer/MapList/MapListButtons
-onready var addMapButton = $VBoxContainer/VBoxContainer/MapList/AddMapButton
+@onready var mapListButtons = $VBoxContainer/VBoxContainer/MapList/MapListButtons
+@onready var addMapButton = $VBoxContainer/VBoxContainer/MapList/AddMapButton
 
-onready var newMapPopup = $NewMapPopup
+@onready var newMapPopup = $NewMapPopup
 
 var project:Project
 
@@ -22,16 +22,16 @@ var selected_tileset:Tileset
 
 func _ready():
 	# show new map popup
-	addMapButton.connect("pressed", newMapPopup, "popup_centered")
+	addMapButton.connect("pressed", Callable(newMapPopup, "popup_centered"))
 	
 	# adding a map
-	newMapPopup.connect("request_add", self, "create_map")
+	newMapPopup.connect("request_add", Callable(self, "create_map"))
 	
 	# selecting a tileset
-	tilesetSelector.connect("tileset_selected", self, "_on_tileset_selected")
+	tilesetSelector.connect("tileset_selected", Callable(self, "_on_tileset_selected"))
 	
 	# selecting a tile
-	tilesetControl.connect("tile_selected", self, "_on_tile_selected")
+	tilesetControl.connect("tile_selected", Callable(self, "_on_tile_selected"))
 	
 	if testing:
 		print("opening test project")
@@ -90,10 +90,10 @@ func refresh_maps():
 
 
 func _add_map_button(map:Map):
-	var mapListItem = MapListItem.instance()
+	var mapListItem = MapListItem.instantiate()
 	mapListItem.map = map
 	mapListButtons.add_child(mapListItem)
-	mapListItem.connect("selected", self, "select_map_by_name", [map.name])
+	mapListItem.connect("selected", Callable(self, "select_map_by_name").bind(map.name))
 
 
 func create_map(map_name:String, tile_size: int, width: int, height: int):

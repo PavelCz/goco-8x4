@@ -6,7 +6,7 @@ enum WAVES {
 	SINE,TRIANGLE,SQUARE,SAW,NOISE
 }
 
-var key:int = -1 setget set_key, get_key
+var key:int = -1: get = get_key, set = set_key
 var pulse_hz:float
 var phase:float = 0.0
 var increment:float
@@ -44,7 +44,7 @@ func frame() -> float:
 		WAVES.SAW:
 			result = fmod(phase, 2) - 1
 		WAVES.NOISE:
-			result = rand_range(0, 1)
+			result = randf_range(0, 1)
 		_:
 			return 0.0
 	

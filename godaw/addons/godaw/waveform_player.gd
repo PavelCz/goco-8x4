@@ -1,4 +1,4 @@
-tool
+@tool
 extends AudioStreamPlayer
 
 signal state_changed(from, to, time_in_state)
@@ -22,27 +22,27 @@ const NOTE_FREQUENCIES: Dictionary = {
 enum Waveform {SINE, TRIANGLE, SQUARE, SAW}
 enum State {STOPPED, ATTACK, DECAY, SUSTAIN, RELEASE}
 
-export(Waveform) var waveform = Waveform.SINE
-export(Note) var note = Note.C
-export(int, 0, 10) var octave = 4
+@export var waveform: Waveform = Waveform.SINE
+@export var note: Note = Note.C
+@export var octave = 4 # (int, 0, 10)
 
-export(bool) var use_hz = false
-export(float, 0, 40000, 0.01) var hz = 220.0
+@export var use_hz: bool = false
+@export var hz = 220.0 # (float, 0, 40000, 0.01)
 
-export(float, 0, 1, 0.01) var limit = 0.6
+@export var limit = 0.6 # (float, 0, 1, 0.01)
 
-export var linear: bool = false
+@export var linear: bool = false
 
-export(float, 0, 10, 0.01) var attack = 1 # in seconds
-export(float, 0, 10, 0.01) var decay = 1 # in seconds
-export(float, 0, 1, 0.01) var sustain = 1 # sustain amplitude (out of 1.0)
-export(float, 0, 10, 0.01) var release = 1 # in seconds
+@export var attack = 1 # in seconds # (float, 0, 10, 0.01)
+@export var decay = 1 # in seconds # (float, 0, 10, 0.01)
+@export var sustain = 1 # sustain amplitude (out of 1.0) # (float, 0, 1, 0.01)
+@export var release = 1 # in seconds # (float, 0, 10, 0.01)
 
-export(float, 0, 1, 0.05) var attack_shape = 0.5
-export(float, 0, 1, 0.05) var decay_shape = 0.5
-export(float, 0, 1, 0.05) var release_shape = 0.5
+@export var attack_shape = 0.5 # (float, 0, 1, 0.05)
+@export var decay_shape = 0.5 # (float, 0, 1, 0.05)
+@export var release_shape = 0.5 # (float, 0, 1, 0.05)
 
-export var play: bool = false # for playing in editor
+@export var play: bool = false # for playing in editor
 
 var was_playing: bool = false
 
@@ -70,7 +70,7 @@ func set_state(state_key: String) -> void:
 	_state_time = _time()
 
 
-func set_audio_bus(audio_bus: String) -> void:
+func set_audio_bus_name(audio_bus: String) -> void:
 	set_bus(audio_bus)
 
 
@@ -196,7 +196,7 @@ func _update_state() -> void:
 
 
 func _time() -> int:
-	return OS.get_ticks_msec()
+	return Time.get_ticks_msec()
 
 
 func _fill_buffer() -> void:

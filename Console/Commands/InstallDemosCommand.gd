@@ -5,13 +5,13 @@ const DEMOS = [
 ]
 
 func copy_dir_recursive(source_dir:String, target_dir:String):
-	var dir := Directory.new()
+	var dir := DirAccess.new()
 	if dir.open(source_dir) == OK:
 		# create this directory
 		if not dir.dir_exists(target_dir):
 			dir.make_dir(target_dir)
 		
-		dir.list_dir_begin(true)
+		dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 		var file_name = dir.get_next()
 		while file_name != "":
 			if dir.current_is_dir():

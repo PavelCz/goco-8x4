@@ -1,4 +1,4 @@
-class_name MapTile extends Reference
+class_name MapTile extends RefCounted
 
 var tileset:Tileset
 var tile_id:int = -1

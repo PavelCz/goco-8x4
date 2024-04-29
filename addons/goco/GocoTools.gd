@@ -2,11 +2,11 @@ tool extends Control
 
 var PackedGame64Resource = load("res://PackedGame64Resource.gd")
 
-onready var sourceFile = $VBoxContainer/HBoxContainer/SourceFile
-onready var projectName = $VBoxContainer/HBoxContainer2/projectName
+@onready var sourceFile = $VBoxContainer/HBoxContainer/SourceFile
+@onready var projectName = $VBoxContainer/HBoxContainer2/projectName
 
 func _ready():
-	$VBoxContainer/HBoxContainer2/SaveButton.connect("pressed", self, "_on_SaveButton_pressed")
+	$VBoxContainer/HBoxContainer2/SaveButton.connect("pressed", Callable(self, "_on_SaveButton_pressed"))
 
 func _on_SaveButton_pressed():
 	print("Saving...")
@@ -32,4 +32,4 @@ func _on_SaveButton_pressed():
 	
 	err = ResourceSaver.save("res://demos/" + project_name + ".tres", packedGame64)
 	if err:
-		push_error("Failed to save .tres to demos folder: " + str(err))
+		push_error("Failed to save super.tres to demos folder: " + str(err))
