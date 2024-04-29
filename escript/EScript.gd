@@ -11,14 +11,12 @@ func _init():
 
 
 func get_file_text(path:String):
-	var f = File.new()
-	var err = f.open(path, File.READ)
-	if err == OK:
-		var text = f.get_as_text()
-		f.close()
+	var file = FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return FileAccess.get_open_error()
+	else:
+		var text = file.get_as_text()
 		return text
-	
-	return err
 
 
 func compile(source:String):
@@ -68,14 +66,12 @@ func compile_file(source_file:String, destination = null):
 		print("destination:")
 		print(destination)
 		
-	var f = File.new()
-	var err = f.open(destination, File.WRITE)
-	if err:
-		ES.echo("Failed to save compiled gdscript to " + destination + ". Error: " + str(err))
+	var f = FileAccess.open(destination, FileAccess.WRITE)
+	if f == null:
+		ES.echo("Failed to save compiled gdscript to " + destination + ". Error: " + str(FileAccess.get_open_error()))
 		return false
 	else:
 		
 		f.store_string(compiled)
-		f.close()
 		
 		return destination

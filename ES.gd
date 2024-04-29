@@ -33,8 +33,7 @@ func clipboard_get() -> ClipboardItem:
 	return clipboard
 
 func project_folder_exists(project:String):
-	var dir = DirAccess.new()
-	return dir.dir_exists("user://projects/" + project)
+	return DirAccess.dir_exists_absolute("user://projects/" + project)
 
 func open_project(project:String):
 	editor.open_project(project)
@@ -57,14 +56,16 @@ func error(message:String):
 
 
 func push_log_to_console():
-	var f = File.new()
-	var logfile = "user://logs/godot.log"
-	if f.file_exists(logfile):
-		var err = f.open(logfile, File.READ)
-		if err:
-			error("Failed to open logfile at " + str(logfile) + ". Err: " + str(err))
+	var log_file_path = "user://logs/godot.log"
+	if FileAccess.file_exists(log_file_path):
+		var log_file = FileAccess.open(log_file_path, FileAccess.READ)
+		if log_file == null:
+			error(
+				"Failed to open logfile at " + str(log_file_path) 
+				+ ". Err: " + str(FileAccess.get_open_error())
+			)
 		else:
-			var messages:String = f.get_as_text()
+			var messages:String = log_file.get_as_text()
 			var regex = RegEx.new()
 			
 			# remove warnings
@@ -87,17 +88,16 @@ func push_log_to_console():
 				var errors = matches.size()
 				error(str(errors) + " Errors occured.")
 			
-			f.close()
 
 
 func clear_log_file():
-	var file = "user://logs/godot.log"
-	var f = File.new()
-	var err = f.open(file, File.WRITE)
-	if err:
-		error("Failed to clear log file. Err: " + str(err))
-	else:
-		f.close()
+	var file_path = "user://logs/godot.log"
+	var file = FileAccess.open(file_path, FileAccess.WRITE)
+	if file == null:
+		error(
+				"Failed to clear log file. Err: " + 
+				str(FileAccess.get_open_error())
+		)
 
 
 func goto_scene(path, arguments := {}):
