@@ -14,7 +14,7 @@ func backtrack(amount:int):
 		
 
 func remove_child(child):
-	children.remove(children.find(child))
+	children.remove_at(children.find(child))
 
 
 func remove_all_tokens_of_type(type:int):
@@ -31,10 +31,13 @@ func first_token(type:int = -1):
 
 
 func last_token(type:int = -1):
-	for child in children.invert():
+	children.reverse()
+	for child in children:
 		if child is Token:
 			if type == -1 or type == child.type:
 				return child
+	# TODO: Not 100% sure we want to do this here...
+	children.reverse()
 
 
 func cleanup():

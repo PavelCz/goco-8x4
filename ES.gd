@@ -22,7 +22,7 @@ func _ready():
 	var root = get_tree().root
 	current_scene = root.get_child(root.get_child_count() - 1)
 
-func clipboard_set(clipboard_item:ClipboardItem):
+func clipboard_set2(clipboard_item:ClipboardItem):
 	clipboard = clipboard_item
 	emit_signal("clipboard_set", clipboard)
 

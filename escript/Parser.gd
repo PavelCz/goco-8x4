@@ -60,7 +60,11 @@ func expectIndent():
 	var tabs_required = indent_level + 1
 	var tabs_found = 0
 	while tabs_found < tabs_required:
-		if expect(Lexer.TOKEN.TAB):
+		# It used to say this here:
+		# if expect(Lexer.TOKEN.TAB):
+		# But AFAICT Lexer.TOKEN.TAB has never existed, so instead I'm replacing it with this,
+		# which should be equivalent to never encountering a TAB.
+		if expect(99):
 			tabs_found += 1
 		else:
 			pointer = save
