@@ -3,16 +3,17 @@ class_name Packer extends RefCounted
 var games_dir_checked:bool = false
 
 func _check_games_dir():
-	var dir = DirAccess.new()
-	var err = dir.open("user://")
-	if err:
-		ES.error("Cannot open user://. Err: " + str(err))
+	var dir = DirAccess.open("user://")
+	if dir == null:
+		error(	
+			"Cannot open user://. Err: " + str(DirAccess.get_open_error()
+		)
 		return
 	
 	if not dir.dir_exists("games"):
 		err = dir.make_dir("games")
-		if err:
-			ES.error("Failed to create user://games directory. Err: " + str(err))
+		if err != OK:
+			error("Failed to create user://games directory. Err: " + str(err))
 		else:
 			ES.echo("Created user://games directory.")
 	games_dir_checked = true
