@@ -1,4 +1,4 @@
-tool extends Control
+@tool extends Control
 
 signal tile_selected(tile)
 
@@ -35,7 +35,7 @@ func create(tiles_x:int, tiles_y:int, tile_size:int):
 
 func update_texture():
 	image_texture.set_data(image)
-	update()
+	queue_redraw()
 
 func set_image(img:Image):
 	image = img

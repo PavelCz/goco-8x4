@@ -1,4 +1,4 @@
-tool class_name TilesetTile extends Control
+@tool class_name TilesetTile extends Control
 
 signal button_down()
 signal button_up()
@@ -12,7 +12,7 @@ var pressed:bool = false: get = get_pressed, set = set_pressed
 
 func set_pressed(p:bool):
 	pressed = p
-	update()
+	queue_redraw()
 
 func get_pressed() -> bool:
 	return pressed
@@ -63,7 +63,7 @@ func _copy_region_to_clipboard():
 	print("copying")
 	var sub_image = tileset.image.get_rect(region)
 	var clipboard = ClipboardItem.new(ClipboardItem.TYPE.IMAGE, sub_image)
-	ES.clipboard_set(clipboard)
+	ES.clipboard_set2(clipboard)
 
 func _cut_region_to_clipboard():
 	var sub_image = tileset.image.get_rect(region)
@@ -71,7 +71,7 @@ func _cut_region_to_clipboard():
 	
 	# fill with transparent
 	tileset.image.fill_rect(region, Color.TRANSPARENT)
-	ES.clipboard_set(clipboard)
+	ES.clipboard_set2(clipboard)
 
 func _paste_from_clipboard():
 	if ES.clipboard and ES.clipboard.type == ClipboardItem.TYPE.IMAGE:

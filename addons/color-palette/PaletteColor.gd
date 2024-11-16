@@ -3,7 +3,7 @@
 # May be used at a later date
 
 
-#tool
+#@tool
 #class_name PaletteColor
 #extends Reference
 #

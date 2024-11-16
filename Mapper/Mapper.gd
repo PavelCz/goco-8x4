@@ -62,7 +62,7 @@ func _close_project():
 	tilesetControl.clear()
 	mapEditor.clear()
 
-
+@warning_ignore("native_method_override")
 func grab_focus():
 	if project:
 		refresh_tilesets()

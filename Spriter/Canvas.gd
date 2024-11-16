@@ -62,7 +62,7 @@ func set_image(img:Image):
 
 func set_image_region(region:Rect2):
 	image_region = region
-	update()
+	queue_redraw()
 
 
 func update_image_texture():
@@ -126,10 +126,10 @@ func _gui_input(event):
 		if event is InputEventMouseButton:
 			if event.is_action("zoom_in") and event.pressed:
 				set_zoom(zoom+1)
-				update()
+				queue_redraw()
 			elif event.is_action("zoom_out") and event.pressed:
 				set_zoom(zoom-1)
-				update()
+				queue_redraw()
 			else:
 				apply_tool(event)
 		elif event is InputEventMouseMotion:
@@ -157,7 +157,7 @@ func apply_tool(event:InputEventMouse):
 			if mouse_pixel_position_in_bounds():
 				set_pixel(pixel, selected_color)
 				update_image_texture()
-				update()
+				queue_redraw()
 			get_viewport().set_input_as_handled()
 		elif event.is_action("left_click"):
 			if event.pressed:
@@ -165,7 +165,7 @@ func apply_tool(event:InputEventMouse):
 				if mouse_pixel_position_in_bounds():
 					set_pixel(pixel, selected_color)
 					update_image_texture()
-					update()
+					queue_redraw()
 			else:
 				pencil_is_drawing = false
 			get_viewport().set_input_as_handled()
@@ -177,7 +177,7 @@ func apply_tool(event:InputEventMouse):
 		if event is InputEventMouseButton and event.pressed:
 			fill()
 			update_image_texture()
-			update()
+			queue_redraw()
 			get_viewport().set_input_as_handled()
 
 func is_equal_approximate(a:Color, b:Color):
@@ -213,7 +213,7 @@ func fill():
 			for pixel in pixel_get_neighbours(n):
 				queue.append(pixel)
 	update_image_texture()
-	update()
+	queue_redraw()
 
 
 func pixel_get_neighbours(pixel:Vector2) -> Array:

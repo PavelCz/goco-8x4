@@ -1,4 +1,4 @@
-tool extends CenterContainer
+@tool extends CenterContainer
 
 signal pressed()
 

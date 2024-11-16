@@ -1,17 +1,17 @@
-tool class_name PaletteSelector extends Control
+@tool class_name PaletteSelector extends Control
 
 signal color_selected()
 
 @export var bg_color: Color = Color(0.03, 0.03, 0.03)
 @export var selected_color: int = 0: get = get_selected, set = set_selected
-@export var palette # (Array, Color)
+@export var palette: Array # (Array, Color)
 @export var swatch_size: int = 8: get = get_swatch_size, set = set_swatch_size
 @export var rows: int = 2: get = get_rows, set = set_rows
 var columns:int = 0
 
 func set_selected(i:int):
 	selected_color = i
-	update()
+	queue_redraw()
 	emit_signal("color_selected", get_selected_color())
 
 func get_selected() -> int:
@@ -23,7 +23,7 @@ func get_selected_color() -> Color:
 func set_swatch_size(ss:int):
 	swatch_size = ss
 	_recalculate_size()
-	update()
+	queue_redraw()
 
 func get_swatch_size() -> int:
 	return swatch_size
@@ -32,7 +32,7 @@ func set_rows(r:int):
 	rows = r
 	columns = palette.size() / rows
 	_recalculate_size()
-	update()
+	queue_redraw()
 
 func get_rows() -> int:
 	return rows

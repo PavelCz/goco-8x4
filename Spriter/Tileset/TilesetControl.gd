@@ -1,4 +1,4 @@
-tool class_name TilesetControl extends GridContainer
+@tool class_name TilesetControl extends GridContainer
 
 signal clipboard_set(data)
 
@@ -23,7 +23,7 @@ func set_tileset(tileset:Tileset):
 
 func update_texture():
 	tileset.update_texture()
-	update()
+	queue_redraw()
 
 
 func clear():
@@ -58,7 +58,9 @@ func _on_tile_pressed(id: int, emit_event:bool = true):
 		var t = get_child(selected_tile)
 		if t:
 			t.button_pressed = false
-	get_child(id).button_pressed = true
+	var child = get_child(id)
+	if child != null:
+		child.button_pressed = true
 	selected_tile = id
 	
 	if emit_event:

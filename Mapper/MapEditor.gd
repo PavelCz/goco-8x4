@@ -16,11 +16,12 @@ var selected_tileset_tile:int
 func open_map(map):
 	current_map = map
 	mapRenderer.map = current_map
-	mapRenderer.update()
+	mapRenderer.queue_redraw()
 	
 	for layer in map.layers:
 		var layerItem = LayerItem.instantiate()
-		layerItem.group = layersListButtonGroup
+		layerItem.add_to_group(layersListButtonGroup.resource_name)
+		#layerItem.group = layersListButtonGroup
 		layerItem.text = layer.name
 		layerItem.connect("toggled", Callable(self, "_on_layer_item_toggled").bind(layerItem))
 		layersList.add_child(layerItem)

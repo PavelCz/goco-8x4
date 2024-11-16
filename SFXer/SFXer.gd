@@ -22,7 +22,8 @@ func _ready():
 	speedControl.connect("value_changed", Callable(self, "_set_pattern_speed"))
 	lengthControl.connect("value_changed", Callable(self, "_set_pattern_length"))
 	
-	var waveButtonsGroup = waveButtons.get_child(0).group
+	# var waveButtonsGroup = waveButtons.get_child(0).group
+	var waveButtonsGroup = waveButtons.get_child(0)
 	waveButtonsGroup.connect("pressed", Callable(self, "_on_wave_button_pressed"))
 	
 	if testing:

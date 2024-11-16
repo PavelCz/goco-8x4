@@ -1,4 +1,4 @@
-tool class_name MapRenderer extends Control
+@tool class_name MapRenderer extends Control
 
 @export var background_color: Color = Color.BLACK
 @export var grid_color: Color = Color.GRAY
@@ -73,7 +73,7 @@ func set_zoom(z:float):
 	
 	if zoom != z:
 		zoom = z
-		update()
+		queue_redraw()
 
 
 func start_paint():
@@ -87,7 +87,7 @@ func update_paint():
 		var y = mouse_tile_pos.y
 		if map.is_grid_pos_in_bounds(x, y):
 			layer.set_tile_g(x, y, selected_tileset, selected_tileset_tile)
-			update()
+			queue_redraw()
 			last_paint_tile_pos = mouse_tile_pos.round()
 
 
@@ -103,7 +103,7 @@ func update_pan():
 	camera = (pan_start_camera - (offset / zoom)).round()
 	
 	status_camera.text = str(camera)
-	update()
+	queue_redraw()
 
 
 func _set_mouse_pos(pos:Vector2):

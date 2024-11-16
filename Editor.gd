@@ -33,7 +33,8 @@ func _ready():
 	add_window("Mapper", mapper)
 	add_window("SFXer", sfxer)
 	
-	get_viewport().render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	#get_viewport().render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	RenderingServer.viewport_set_clear_mode(get_viewport(), RenderingServer.VIEWPORT_CLEAR_ALWAYS)
 	
 	if ES.scene_arguments.has("launched_by_runner"):
 		ES.push_log_to_console()

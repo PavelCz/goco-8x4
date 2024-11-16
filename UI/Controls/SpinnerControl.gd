@@ -1,4 +1,4 @@
-tool class_name SpinnerControl extends Control
+@tool class_name SpinnerControl extends Control
 
 signal value_changed(value)
 
@@ -24,7 +24,7 @@ var forward_pressed:bool = false
 
 func _ready():
 	_recalculate_sizes()
-	update()
+	queue_redraw()
 
 func _gui_input(event):
 	if event is InputEventMouseMotion:
@@ -58,7 +58,7 @@ func forward():
 		value = max_value
 	else:
 		emit_signal("value_changed", value)
-		update()
+		queue_redraw()
 
 
 func back():
@@ -67,7 +67,7 @@ func back():
 		value = min_value
 	else:
 		emit_signal("value_changed", value)
-		update()
+		queue_redraw()
 
 
 func set_value(v):
@@ -75,7 +75,7 @@ func set_value(v):
 
 	_recalculate_sizes()
 	
-	update()
+	queue_redraw()
 
 
 func get_value():

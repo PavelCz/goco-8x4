@@ -1,4 +1,4 @@
-tool class_name TimelineView extends Control
+@tool class_name TimelineView extends Control
 
 @export var playhead_color: Color = Color.WHITE
 var pattern:SFXPattern: get = get_pattern, set = set_pattern
@@ -83,7 +83,7 @@ func paint(event:InputEventMouse):
 	var key = get_note_at_y(event.position.y)
 	set_pattern_note(note_index, key, selected_wave)
 	var hertz = pattern.notes[note_index].pulse_hz
-	update()
+	queue_redraw()
 
 
 func set_pattern_note(index:int, key:int, wave:int):
@@ -92,7 +92,7 @@ func set_pattern_note(index:int, key:int, wave:int):
 	pattern.notes[index].key = key
 	pattern.notes[index].wave = wave
 	#print("setting pattern note " + str(index) + " to " + str(key))
-	update()
+	queue_redraw()
 
 
 func play():
@@ -106,12 +106,12 @@ func stop():
 	if is_playing:
 		player.stop()
 		is_playing = false
-		update()
+		queue_redraw()
 
 
 func _process(delta):
 	if is_playing:
-		update()
+		queue_redraw()
 
 
 func _draw():

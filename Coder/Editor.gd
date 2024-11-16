@@ -230,12 +230,12 @@ func show_suggestions():
 
 
 func save():
-	var f = File.new()
-	var err = f.open(file, File.WRITE)
-	if err == OK:
+	
+	var f = FileAccess.open(file, FileAccess.WRITE)
+	if f != null:
 		f.store_string(text)
 		f.close()
 		dirty = false
 		ES.echo("Saved " + file)
 	else:
-		ES.echo("Failed to save " + file + ". Err: " + str(err))
+		ES.echo("Failed to save " + file + ". Err: " + str(FileAccess.get_open_error()))

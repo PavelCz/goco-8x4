@@ -72,6 +72,7 @@ func _process(delta):
 	if playing:
 		_fill_buffer()
 
+@warning_ignore("native_method_override")
 func play(from:float = 0.0):
 	if not pattern:
 		return

@@ -8,26 +8,26 @@ const CoderTreeItemScene = preload("res://Coder/CoderTreeItem.tscn")
 
 var is_visible:bool = false
 
-var directory:DirAccess = DirAccess.new()
+var directory = null
 
 var focused_item = null
 
 var project:Project
 
 func _ready():
-	var err = directory.open("user://")
-	if err == OK:
+	directory = DirAccess.open("user://")
+	if directory != null:
 		set_folder(".")
 	else:
-		ES.error("Failed to open user://, error: " + str(err))
+		ES.error("Failed to open user://, error: " + str(DirAccess.get_open_error()))
 
 
-func grab_focus():
+func grab_focus_():
 	if get_child_count() > 1:
 		if is_instance_valid(focused_item) and focused_item:
-			focused_item.grab_focus()
+			focused_item.grab_focus_()
 		else:
-			get_child(1).grab_focus()
+			get_child(1).grab_focus_()
 
 func toggle():
 	if is_visible:

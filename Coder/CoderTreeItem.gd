@@ -1,7 +1,7 @@
 class_name CoderTreeItem extends HBoxContainer
 
-signal focus_next()
-signal focus_previous()
+signal focus_next_()
+signal focus_previous_()
 signal selected()
 signal file_renamed(old_path, new_path)
 signal edit_cancelled()
@@ -96,7 +96,7 @@ func _on_text_entered(text):
 	
 	var p = Array(path.trim_prefix("user://").split("/"))
 	p.pop_back()
-	p = p, "/".join(ES) + "/" + text
+	p = p + "/".join([str(ES)]) + "/" + text
 	path = p.trim_prefix("/")
 	
 	button.text = text

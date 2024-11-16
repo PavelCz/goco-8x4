@@ -1,4 +1,4 @@
-tool class_name Note extends Resource
+@tool class_name Note extends Resource
 
 const OCTAVE_FACTOR = pow(2, 1.0/12)
 

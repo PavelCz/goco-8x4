@@ -3,6 +3,7 @@ class_name HelpPanel extends MarginContainer
 var is_visible:bool = false
 
 
+@warning_ignore("native_method_override")
 func show():
 	if $AnimationPlayer.is_playing():
 		$AnimationPlayer.stop()
@@ -10,7 +11,7 @@ func show():
 	$AnimationPlayer.play("show")
 	is_visible = true
 
-
+@warning_ignore("native_method_override")
 func hide():
 	if $AnimationPlayer.is_playing():
 		$AnimationPlayer.stop()

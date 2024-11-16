@@ -30,7 +30,7 @@ func _ready():
 		var p = Project.new(testing_project_name)
 		p.load_data()
 		_open_project(p)
-		grab_focus()
+		grab_focus_()
 		has_focus = true
 	
 
@@ -89,13 +89,13 @@ func _save_project(project:Project):
 			editor.save()
 
 
-func grab_focus():
+func grab_focus_():
 	has_focus = true
 	$Code/EditorTabs.grab_focus()
 	$Code/EditorTabs.grab_click_focus()
 
 
-func release_focus():
+func release_focus_():
 	has_focus = false
 
 
@@ -141,11 +141,10 @@ func get_editor_tab_from_file(path:String) -> Node:
 
 func open_file(path:String):
 	print("Opening " + path)
-	var f = File.new()
 	
-	var err = f.open(path, File.READ)
-	if err:
-		ES.echo("Editor failed to open file at " + path + ". Err:" + str(err))
+	var f = FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		ES.echo("Editor failed to open file at " + path + ". Err:" + str(FileAccess.get_open_error()))
 		return false
 		
 	var text = f.get_as_text()
@@ -195,17 +194,16 @@ func _on_new_file_named(old_path, new_path, item):
 	if not new_path.ends_with(".gd"):
 		new_path = new_path + ".gd"
 	
-	var f = File.new()
-	var err = f.open(new_path, File.WRITE)
-	if err:
-		ES.echo("Failed to open " + new_path + " for writing new code file. Err: " + str(err))
+	var f = FileAccess.open(new_path, FileAccess.WRITE)
+	if f == null:
+		ES.echo("Failed to open " + new_path + " for writing new code file. Err: " + str(FileAccess.get_open_error()))
 	else:
 		f.store_line(code_template)
 		f.close()
 	
 	item.disconnect("file_renamed", Callable(self, "_on_new_file_named"))
 	item.get_node("Autoload").show()
-	if not err:
+	if f != null:
 		open_file(new_path)
 
 
@@ -222,11 +220,11 @@ func _on_item_autoload_changed(item, file:String, autoload:bool):
 	if not project.has_meta("autoload"):
 		project.put_meta("autoload", [])
 	
-	var al:Array = project.get_meta("autoload")
+	var al: Array = project.get_meta("autoload")
 	
 	if autoload and not al.has(file):
 			al.append(file)
 	elif al.has(file):
-		al.remove(al.find(file))
+		al.remove_at(al.find(file))
 	
 	project.put_meta("autoload", al)
