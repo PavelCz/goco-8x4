@@ -11,8 +11,7 @@ func run(args:Array = []):
 	
 	var file = ES.console.dir + "/" + file_name
 	
-	var f = File.new()
-	if not f.file_exists(file):
+	if not FileAccess.file_exists(file):
 		ES.error("No file named " + file_name + ".")
 		return COMMAND_ERROR
 	

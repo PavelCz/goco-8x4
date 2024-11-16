@@ -23,14 +23,13 @@ func run(args:Array = []):
 		ES.console.gocoNet.connect("upload_failed", Callable(self, "_on_upload_failed"))
 	
 	
-	var f = File.new()
-	if not f.file_exists(path):
+	if not FileAccess.file_exists(path):
 		ES.error(path + " does not eixst.")
 		return COMMAND_ERROR
 	
-	var err = f.open(path, File.READ)
-	if err:
-		ES.error("Failed to open " + path + ". Err: " + str(err))
+	var f = FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		ES.error("Failed to open " + path + ". Err: " + str(FileAccess.get_open_error()))
 		return COMMAND_ERROR
 	
 	# unpack game to check for title and version

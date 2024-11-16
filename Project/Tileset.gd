@@ -98,10 +98,9 @@ func unserialize(project, data:Dictionary):
 
 
 func load_file():
-	var f = File.new()
-	var err = f.open(path, File.READ)
-	if err:
-		ES.echo("Failed to open image at " + path + ". Err:" + str(err))
+	var f = FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		ES.echo("Failed to open image at " + path + ". Err:" + str(FileAccess.get_open_error()))
 		return false
 
 	var buffer = f.get_buffer(f.get_length())

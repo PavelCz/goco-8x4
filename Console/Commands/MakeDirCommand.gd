@@ -6,11 +6,10 @@ func run(args:Array = []):
 		return ERR_PARAMETER_RANGE_ERROR
 	
 	var name = args[0]
-	var dir = DirAccess.new()
-	dir.change_dir(ES.console.dir)
-	var err = dir.make_dir(name)
-	if err != OK:
-		ES.echo(err)
-		return err
+	var dir = DirAccess.open(ES.console.dir)
+	dir.make_dir(name)
+	if dir == null:
+		ES.echo(str(DirAccess.get_open_error()))
+		return DirAccess.get_open_error()
 	else:
 		return OK

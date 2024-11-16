@@ -4,8 +4,8 @@ func _ready():
 	install_effect(RainbowTextEffect.new())
 
 func write(string: String):
-	append_bbcode(string)
+	append_text(string)
 
-func clear():
+func clear_():
 	text = ""
 

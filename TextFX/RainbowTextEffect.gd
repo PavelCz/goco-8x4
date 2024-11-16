@@ -1,4 +1,4 @@
-tool class_name RainbowTextEffect extends RichTextEffect
+@tool class_name RainbowTextEffect extends RichTextEffect
 
 @export var start_color: Color = Color.AQUA
 @export var end_color: Color = Color.PALE_GREEN

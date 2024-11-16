@@ -5,8 +5,7 @@ func run(args:Array = []):
 		ES.echo("make command needs a project name!")
 		return COMMAND_ERROR
 	
-	var dir = DirAccess.new()
-	dir.open("user://")
+	var dir = DirAccess.open("user://")
 	
 	if not dir.dir_exists("projects"):
 		var err = dir.make_dir("projects")

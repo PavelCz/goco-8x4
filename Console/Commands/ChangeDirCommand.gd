@@ -9,8 +9,7 @@ func run(args:Array = []):
 	
 	var to_dir = args[0]
 	
-	var dir = DirAccess.new()
-	dir.open(ES.console.dir)
+	var dir = DirAccess.open(ES.console.dir)
 	dir.change_dir(to_dir)
 	var new_dir = dir.get_current_dir()
 	ES.console.write(new_dir.trim_prefix("user:/"))

@@ -19,18 +19,19 @@ func _init(project_name:String):
 	path = "user://projects/" + project_name
 
 
-func has_meta(key:String) -> bool:
+# Not sure if we need this, or if we can just use the one from the superclass
+func _has_meta(key:StringName) -> bool:
 	return meta.has(key)
 
 
-func get_meta(key:String, default = null):
+func _get_meta(key:String, default = null):
 	if has_meta(key):
 		return meta[key]
 	else:
 		return default
 
 
-func put_meta(key, value):
+func _put_meta(key, value):
 	meta[key] = value
 
 
@@ -51,34 +52,33 @@ func get_sfx_dir(f = "") -> String:
 	return path + "/sfx" + f
 
 func load_data() -> bool:
-	var f := File.new()
-	var project_file = get_project_file()
+	var project_file_path = get_project_file()
 	
 	# get project file
-	if not f.file_exists(project_file):
+	if not FileAccess.file_exists(project_file_path):
 		ES.echo("Project file does not exist. Assuming it's a new project.")
 		return false
 	
 	# open it
-	var err = f.open(project_file, File.READ)
-	if err:
-		ES.echo("Failed to open project file " + project_file + ". Err: " + str(err))
+	var project_file = FileAccess.open(project_file_path, FileAccess.READ)
+	if project_file == null:
+		ES.echo("Failed to open project file " + project_file_path + ". Err: " + str(FileAccess.get_open_error()))
 		return false
 	else:
 		# get data and parse it
 		var data
 		
 		var test_json_conv = JSON.new()
-		test_json_conv.parse(f.get_as_text())
-		var json := test_json_conv.get_data()
+		test_json_conv.parse(project_file.get_as_text())
+		var json = test_json_conv.get_data()
 		if json.error:
-			ES.error("Failed to parse JSON file " + project_file + ". Err: " + str(err))
+			ES.error("Failed to parse JSON file " + project_file_path + ". Err: " + str(json.error))
 			return false
 		data = json.result
 		
 		# finally, unserialize
 		unserialize(data)
-		f.close()
+		project_file.close()
 	
 	is_loaded = true
 	return true
@@ -102,11 +102,11 @@ func get_map(name:String) -> Map:
 	return maps[name]
 
 func save_data(save_scripts:bool = false):
-	var f = File.new()
-	var project_file = get_project_file()
-	var err = f.open(project_file, File.WRITE)
-	if err:
-		ES.echo("Failed to open project_file for saving. Err: " + str(err))
+
+	var project_file_path = get_project_file()
+	var project_file = FileAccess.open(project_file_path, FileAccess.WRITE)
+	if project_file == null:
+		ES.echo("Failed to open project_file for saving. Err: " + str(FileAccess.get_open_error()))
 		return false
 	
 	version += 1
@@ -118,9 +118,9 @@ func save_data(save_scripts:bool = false):
 	
 	var json = JSON.stringify(serialize(), "\t")
 	
-	f.store_string(json)
-	f.close()
-	ES.echo("Project data saved to " + project_file)
+	project_file.store_string(json)
+	project_file.close()
+	ES.echo("Project data saved to " + project_file_path)
 	return true
 
 
@@ -129,24 +129,22 @@ func load_compiled_script(name:String):
 	name = name.replace(".es", ".gd")
 	var file = get_code_dir() + "/" + name
 	
-	var f = File.new()
-	var err = f.open(file, File.READ)
-	if err == OK:
+	var f = FileAccess.open(file, FileAccess.READ)
+	if f != null:
 		var script = GDScript.new()
 		script.source_code = f.get_as_text()
 		f.close()
 		return script
 	else:
-		ES.echo("Failed to load compiled script at " + file + ". Err: " + str(err))
+		ES.echo("Failed to load compiled script at " + file + ". Err: " + str(FileAccess.get_open_error()))
 
 
 # get all .es scripts in /code project dir
 func get_scripts() -> Array:
 	var scripts = []
 	
-	var dir = DirAccess.new()
-	var err = dir.open(get_code_dir())
-	if err == OK:
+	var dir = DirAccess.open(get_code_dir())
+	if dir != null:
 		dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 		
 		var script_file:String = dir.get_next()
@@ -157,7 +155,7 @@ func get_scripts() -> Array:
 			script_file = dir.get_next()
 		dir.list_dir_end()
 	else:
-		ES.echo("Failed to open code directory " + get_code_dir() + ". Err: " + str(err))
+		ES.echo("Failed to open code directory " + get_code_dir() + ". Err: " + str(DirAccess.get_open_error()))
 	
 	return scripts
 
@@ -172,7 +170,8 @@ func get_compiled_scripts() -> Array:
 
 func compile_scripts():
 	var scripts = get_scripts()
-	var f = File.new()
+	# Not sure why this was here, doesn't seem necessary.
+	# var f = File.new()
 	for source_file in scripts:
 		ES.escript.compile_file(get_code_dir() + "/" + source_file)
 	
@@ -186,9 +185,8 @@ func save_tilesets():
 func save_scripts():
 	for name in scripts.keys():
 		var script:GDScript = scripts[name]
-		var f = File.new()
-		var err = f.open(get_code_dir(name), File.WRITE)
-		if err:
+		var f = FileAccess.open(get_code_dir(name), FileAccess.WRITE)
+		if f == null:
 			ES.error("Failed to open " + get_code_dir(name) + " for writing.")
 		else:
 			
@@ -218,7 +216,9 @@ func pack():
 	# scripts
 	var scripts = get_scripts()
 	for script in scripts:
-		packed["scripts"][script] = ResourceLoader.load(get_code_dir() + "/" + script, "", false)
+		# Not quite sure which Cache Mode was intended here, since the API changed between godot 
+		# 3 and 4. Originally it was p_no_cache set to false.
+		packed["scripts"][script] = ResourceLoader.load(get_code_dir() + "/" + script, "", ResourceLoader.CACHE_MODE_IGNORE)
 	
 	return packed
 

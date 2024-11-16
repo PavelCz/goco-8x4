@@ -5,8 +5,8 @@ const DEMOS = [
 ]
 
 func copy_dir_recursive(source_dir:String, target_dir:String):
-	var dir := DirAccess.new()
-	if dir.open(source_dir) == OK:
+	var dir = DirAccess.open(source_dir)
+	if dir != null:
 		# create this directory
 		if not dir.dir_exists(target_dir):
 			dir.make_dir(target_dir)

@@ -1,9 +1,9 @@
 class_name ListFilesCommand extends ConsoleCommand
 
 func run(args:Array = []):
-	var dir = DirAccess.new()
+	var dir = DirAccess.open(ES.console.dir)
 	
-	if dir.open(ES.console.dir) == OK:
+	if dir != null:
 		var list = ""
 		
 		dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547

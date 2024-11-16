@@ -42,7 +42,7 @@ func _ready():
 	if ES.scene_arguments.has("open"):
 		open_project(ES.scene_arguments.open)
 	
-	get_window().grab_focus()
+	get_window_().grab_focus()
 
 
 func _input(event: InputEvent):
@@ -126,19 +126,19 @@ func add_window(name, control):
 	add_child(control)
 
 
-func get_window() -> Node:
+func get_window_() -> Node:
 	return get_node(windows[current_window_number])
 
 
 func go_to_window(name:String):
-	var window = get_window()
+	var window = get_window_()
 	window.release_focus()
 	
 	var num = windows.find(name)
 	current_window_number = num
 	target_offset = -320 * num
 	is_sliding = true
-	get_window().grab_focus()
+	get_window_().grab_focus()
 	project.put_meta("editor_window", name)
 
 
@@ -171,6 +171,6 @@ func _process(delta):
 		position.x = lerp(position.x, target_offset, 0.1)
 	else:
 		if is_sliding:
-			get_window().grab_focus()
-			get_window().grab_click_focus()
+			get_window_().grab_focus()
+			get_window_().grab_click_focus()
 			is_sliding = false

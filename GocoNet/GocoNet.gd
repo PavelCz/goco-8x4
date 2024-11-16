@@ -27,11 +27,11 @@ func _ready():
 	pass
 
 func _disconnect_all():
-	if is_connected("request_completed", Callable(self, "info_received")):
-		disconnect("request_completed", Callable(self, "info_received"))
+	if is_connected("request_completed", Callable(self, "info_received_")):
+		disconnect("request_completed", Callable(self, "info_received_"))
 	
-	if is_connected("request_completed", Callable(self, "games_received")):
-		disconnect("request_completed", Callable(self, "games_received"))
+	if is_connected("request_completed", Callable(self, "games_received_")):
+		disconnect("request_completed", Callable(self, "games_received_"))
 	
 	if is_connected("request_completed", Callable(self, "_login_status")):
 		disconnect("request_completed", Callable(self, "_login_status"))
@@ -65,7 +65,8 @@ func login(username: String, password: String):
 		"password": password
 	}
 	var query = _prepare_query_string(credentials)
-	var err = request(ADDRESS + "/login", ['Content-Type: application/x-www-form-urlencoded'], VERIFY_SSL, HTTPClient.METHOD_POST, query)
+	# This bool option was removed in godot 4, not sure if there is anything to eplace it: VERIFY_SSL, 
+	var err = request(ADDRESS + "/login", ['Content-Type: application/x-www-form-urlencoded'], HTTPClient.METHOD_POST, query)
 
 
 
@@ -101,7 +102,7 @@ func upload(packed_project, game_data: String):
 	}
 	var query = _prepare_query_string(game)
 	
-	var err = request(ADDRESS + "/upload", ['Content-Type: application/x-www-form-urlencoded'], VERIFY_SSL, HTTPClient.METHOD_POST, query)
+	var err = request(ADDRESS + "/upload", ['Content-Type: application/x-www-form-urlencoded'], HTTPClient.METHOD_POST, query)
 	
 	if err:
 		ES.error("HTTPRequest error: " + str(err))
@@ -118,11 +119,11 @@ func _upload_status(result, response_code, headers, body):
 
 func get_info():
 	_disconnect_all()
-	connect("request_completed", Callable(self, "info_received"))
-	request(ADDRESS + "/games/info", PackedStringArray(), VERIFY_SSL)
+	connect("request_completed", Callable(self, "info_received_"))
+	request(ADDRESS + "/games/info", PackedStringArray())
 
 
-func info_received(result, response_code, headers, body):
+func info_received_(result, response_code, headers, body):
 	if response_code == 200:
 		var text = body.get_string_from_utf8()
 		var test_json_conv = JSON.new()
@@ -130,7 +131,7 @@ func info_received(result, response_code, headers, body):
 		var data = test_json_conv.get_data()
 		
 		if data.error == OK:
-			emit_signal("info_received", data.result)
+			info_received.emit(data.result)
 			return
 	
 	emit_signal("bad_response", result, response_code, headers, body)
@@ -139,11 +140,11 @@ func info_received(result, response_code, headers, body):
 func get_games(page:int):
 	_disconnect_all()
 	print("Getting games page " + str(page))
-	connect("request_completed", Callable(self, "games_received"))
-	request(ADDRESS + "/games/" + str(page), PackedStringArray(), VERIFY_SSL)
+	connect("request_completed", Callable(self, "games_received_"))
+	request(ADDRESS + "/games/" + str(page), PackedStringArray())
 
 
-func games_received(result, response_code, headers, body):
+func games_received_(result, response_code, headers, body):
 	if result != OK:
 		print("failed, HTTPRequest Error: " + str(result))
 		return
@@ -153,7 +154,7 @@ func games_received(result, response_code, headers, body):
 		var test_json_conv = JSON.new()
 		test_json_conv.parse(text)
 		var data = test_json_conv.get_data()
-		emit_signal("games_received", data.result)
+		games_received.emit(data.result)
 		return
 	
 	emit_signal("bad_response", result, response_code, headers, body)
@@ -165,7 +166,7 @@ func download(file_name:String):
 	print("download " + file_name + "...")
 	_disconnect_all()
 	connect("request_completed", Callable(self, "_game_downloaded"))
-	var err = request(ADDRESS + "/download/" + file_name, PackedStringArray(), VERIFY_SSL)
+	var err = request(ADDRESS + "/download/" + file_name, PackedStringArray())
 	if err != OK:
 		ES.error("HTTPRequest Error: " + str(err))
 
@@ -203,11 +204,10 @@ func _save_game(game:Dictionary) -> int:
 	var filename = "user://games/" + game.filename
 	var game_raw = Marshalls.base64_to_raw(game.data)
 	
-	var f = File.new()
-	var err = f.open(filename, File.WRITE)
+	var f = FileAccess.open(filename, FileAccess.WRITE)
 	
-	if err:
-		return err
+	if f == null:
+		return FileAccess.get_open_error()
 	
 	f.store_buffer(game_raw)
 	f.close()

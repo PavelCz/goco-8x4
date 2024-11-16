@@ -60,17 +60,17 @@ func _ready():
 		has_focus = true
 	
 	if has_focus:
-		input.grab_focus()
+		input.grab_focus_()
 	
 
 func add_command(command_name: String, command:ConsoleCommand):
 	commands[command_name] = command
 
-func grab_focus():
-	input.grab_focus()
+func grab_focus_():
+	input.grab_focus_()
 	has_focus = true
 
-func release_focus():
+func release_focus_():
 	super.release_focus()
 	has_focus = false
 

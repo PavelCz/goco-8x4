@@ -5,15 +5,15 @@ var games_dir_checked:bool = false
 func _check_games_dir():
 	var dir = DirAccess.open("user://")
 	if dir == null:
-		error(	
-			"Cannot open user://. Err: " + str(DirAccess.get_open_error()
+		ES.error(	
+			"Cannot open user://. Err: " + str(DirAccess.get_open_error())
 		)
 		return
 	
 	if not dir.dir_exists("games"):
-		err = dir.make_dir("games")
+		var err = dir.make_dir("games")
 		if err != OK:
-			error("Failed to create user://games directory. Err: " + str(err))
+			ES.error("Failed to create user://games directory. Err: " + str(err))
 		else:
 			ES.echo("Created user://games directory.")
 	games_dir_checked = true
@@ -28,33 +28,31 @@ func pack(project:Project):
 	
 	var packed_project = project.pack()
 	
-	var file = "user://projects/" + project.name + "/" + project.name + ".g8"
+	var file_name = "user://projects/" + project.name + "/" + project.name + ".g8"
 	
-	var f = File.new()
-	var err = f.open(file, File.WRITE)
-	if err:
-		ES.error("Failed to open " + file + ". Err: " + str(err))
+	var file = FileAccess.open(file_name, FileAccess.WRITE)
+	if file == null:
+		ES.error("Failed to open " + file_name + ". Err: " + str(FileAccess.get_open_error()))
 	else:
-		f.store_var(packed_project, true)
-		f.close()
-		ES.echo("Project packed to " + file + ".")
+		file.store_var(packed_project, true)
+		file.close()
+		ES.echo("Project packed to " + file_name + ".")
 
 
-func unpack_and_save(game_file: String, project_name:String = "") -> Project:
-	var f = File.new()
+func unpack_and_save(game_file_path: String, project_name:String = "") -> Project:
 	
-	if not f.file_exists(game_file):
-		ES.error("Game file not found: " + game_file)
+	if not FileAccess.file_exists(game_file_path):
+		ES.error("Game file not found: " + game_file_path)
 		return null
 	
-	var err = f.open(game_file, File.READ)
-	if err:
-		ES.error("Failed to open game_file at " + str(game_file) + ". Err: " + str(err))
+	var game_file = FileAccess.open(game_file_path, FileAccess.READ)
+	if game_file == null:
+		ES.error("Failed to open game_file at " + str(game_file_path) + ". Err: " + str(FileAccess.get_open_error()))
 		return null
 	
-	var packed_project = f.get_var(true)
+	var packed_project = game_file.get_var(true)
 	
-	f.close()
+	game_file.close()
 	
 	# why wasnt this being done already?
 	if project_name == "":

@@ -7,10 +7,9 @@ func run(args:Array = []):
 	var file:String = str(args[0])
 	file = file.lstrip("/")
 	file = (ES.console.dir + "/").replace("///", "//") + file
-	var f = File.new()
-	var err = f.open(file, File.READ)
-	if err:
-		ES.echo("Failed to open file at " + str(file) + ". Err: " + str(err))
+	var f = FileAccess.open(file, FileAccess.READ)
+	if f == null:
+		ES.echo("Failed to open file at " + str(file) + ". Err: " + str(FileAccess.get_open_error()))
 		return COMMAND_ERROR
 	else:
 		var text = f.get_as_text()

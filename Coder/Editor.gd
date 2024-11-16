@@ -41,17 +41,18 @@ const SYMBOLS = {
 }
 
 func _ready():
+	syntax_highlighter = CodeHighlighter.new()
 	# strings
-	add_color_region("\"", "\"", COLORS.String)
+	syntax_highlighter.add_color_region("\"", "\"", COLORS.String)
 	
 	# comments
-	add_color_region("#", "\n", COLORS.Comment, true)
+	syntax_highlighter.add_color_region("#", "\n", COLORS.Comment, true)
 	
 	for kw in KEYWORDS:
-		add_keyword_color(kw, COLORS.Keyword)
+		syntax_highlighter.add_keyword_color(kw, COLORS.Keyword)
 	
 	for constant in CONSTANTS:
-		add_keyword_color(constant, COLORS.Constant)
+		syntax_highlighter.add_keyword_color(constant, COLORS.Constant)
 	
 	connect("text_changed", Callable(self, "_on_text_changed"))
 	connect("cursor_changed", Callable(self, "_on_cursor_changed"))
@@ -194,9 +195,12 @@ func accept_suggestion():
 
 
 func get_string_size(string:String) -> Vector2:
+	# From godto 4 on dont size is required when querying the char size, not
+	# sure which value makes sense here, or where I could possibly query this.
+	var font_size = 16
 	var font = get_theme_default_font()
 	var tabs = string.count("\t")
-	var tab_width = font.get_char_size(KEY_SPACE).x * 4
+	var tab_width = font.get_char_size(KEY_SPACE, font_size).x * 4
 	var size = font.get_string_size(string)
 	size.x += tab_width * tabs
 	return size
